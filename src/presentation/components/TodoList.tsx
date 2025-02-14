@@ -3,14 +3,19 @@
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
 import { TodoViewModel } from "../presenters/todo.presenter";
+import { TodoListSkeleton } from "./TodoSkeleton";
 
 interface TodoListProps {
   todos: TodoViewModel[];
   onEdit: (todo: TodoViewModel) => void;
   onDelete: (todo: TodoViewModel) => void;
+  isLoading?: boolean;
 }
 
-export function TodoList({ todos, onEdit, onDelete }: TodoListProps) {
+export function TodoList({ todos, onEdit, onDelete, isLoading = false }: TodoListProps) {
+  if (isLoading) {
+    return <TodoListSkeleton />;
+  }
   if (todos.length === 0) {
     return (
       <Card>

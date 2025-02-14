@@ -19,15 +19,23 @@ export function HomePageScreen({
     initialTodos.success ? initialTodos.data ?? [] : []
   );
   const [editingTodo, setEditingTodo] = useState<TodoViewModel | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCreate = async (formData: FormData) => {
+    setIsLoading(true);
+    try {
     const result = await createTodo(formData);
     if (result.success && result.data) {
       setTodos((prev) => [...prev, result.data as TodoViewModel]);
     }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleUpdate = async (formData: FormData) => {
+    setIsLoading(true);
+    try {
     if (!editingTodo) return;
 
     const result = await updateTodo(editingTodo.id, formData);
@@ -39,13 +47,21 @@ export function HomePageScreen({
       );
       toast.success("Todo updated");
     }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleDelete = async (todo: TodoViewModel) => {
+    setIsLoading(true);
+    try {
     const result = await deleteTodo(todo.id);
     if (result.success) {
       setTodos((prev) => prev.filter((t) => t.id !== todo.id));
       toast.success("Todo deleted");
+    }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -65,6 +81,7 @@ export function HomePageScreen({
             todos={todos}
             onEdit={setEditingTodo}
             onDelete={handleDelete}
+            isLoading={isLoading}
           />
         </div>
       </div>
