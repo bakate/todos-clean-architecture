@@ -4,6 +4,7 @@ import {
   DeleteTodoUseCase,
   GetTodoUseCase,
   ListTodosUseCase,
+  ToggleTodoCompleteUseCase,
   UpdateTodoUseCase,
 } from "@/src/domain/usecases/todo";
 
@@ -19,6 +20,7 @@ export const DI_SYMBOLS = {
   UpdateTodoUseCase: Symbol.for("UpdateTodoUseCase"),
   DeleteTodoUseCase: Symbol.for("DeleteTodoUseCase"),
   GetTodoUseCase: Symbol.for("GetTodoUseCase"),
+  ToggleTodoCompleteUseCase: Symbol.for("ToggleTodoCompleteUseCase"),
   ListTodosUseCase: Symbol.for("ListTodosUseCase"),
 } as const;
 
@@ -35,4 +37,5 @@ export interface DI_TYPES {
   DeleteTodoUseCase: DeleteTodoUseCase;
   GetTodoUseCase: GetTodoUseCase;
   ListTodosUseCase: ListTodosUseCase;
+  ToggleTodoCompleteUseCase: ToggleTodoCompleteUseCase;
 }

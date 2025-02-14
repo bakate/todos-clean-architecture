@@ -8,6 +8,7 @@ import {
   ListTodosUseCase,
   UpdateTodoUseCase,
   DeleteTodoUseCase,
+  ToggleTodoCompleteUseCase,
 } from "@/src/domain/usecases/todo";
 
 export const todoModule = new ContainerModule((bind) => {
@@ -26,4 +27,8 @@ export const todoModule = new ContainerModule((bind) => {
   bind(DI_SYMBOLS.UpdateTodoUseCase).to(UpdateTodoUseCase).inSingletonScope();
 
   bind(DI_SYMBOLS.DeleteTodoUseCase).to(DeleteTodoUseCase).inSingletonScope();
+
+  bind(DI_SYMBOLS.ToggleTodoCompleteUseCase)
+    .to(ToggleTodoCompleteUseCase)
+    .inSingletonScope();
 });

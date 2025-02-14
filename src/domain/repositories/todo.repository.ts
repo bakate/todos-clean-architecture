@@ -10,4 +10,5 @@ export interface TodoRepository {
   findAll(): Promise<TodoEntity[]>;
   update(todo: TodoEntity): Promise<TodoEntity>;
   delete(id: TodoId): Promise<void>;
+  toggleComplete(id: TodoId): Promise<TodoEntity>;
 }
