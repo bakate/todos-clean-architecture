@@ -19,7 +19,7 @@ import {
   TodoPresenter,
   TodoPresenterResult,
   TodoViewModel,
-} from "@/src/presentation/presenters/todo.presenter";
+} from "../presenters/todo.presenter";
 import { revalidatePath } from "next/cache";
 
 export async function getTodos(): Promise<

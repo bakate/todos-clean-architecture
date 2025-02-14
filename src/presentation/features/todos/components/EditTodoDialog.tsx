@@ -8,6 +8,7 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@heroui/react";
+import { useTransition } from "react";
 import { TodoViewModel } from "../presenters/todo.presenter";
 import { TodoForm } from "./TodoForm";
 
@@ -24,6 +25,7 @@ export function EditTodoDialog({
   onOpenChange,
   onSubmit,
 }: EditTodoDialogProps) {
+  const [, startTransition] = useTransition();
   if (!todo) return null;
 
   return (
@@ -31,7 +33,18 @@ export function EditTodoDialog({
       <ModalContent>
         <ModalHeader>Edit Todo</ModalHeader>
         <ModalBody>
-          <TodoForm onSubmit={onSubmit} submitLabel="Update Todo" />
+          {todo && (
+            <TodoForm
+              todo={todo}
+              onSubmit={async (formData) => {
+                startTransition(async () => {
+                  await onSubmit(formData);
+                  onOpenChange(false);
+                });
+              }}
+              submitLabel="Update Todo"
+            />
+          )}
         </ModalBody>
         <ModalFooter>
           <Button variant="light" onPress={() => onOpenChange(false)}>

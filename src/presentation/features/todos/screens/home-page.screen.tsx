@@ -1,14 +1,15 @@
 "use client";
-import { useState } from "react";
-import { createTodo, updateTodo, deleteTodo } from "@/src/presentation/actions/todos";
-import { TodoForm } from "@/src/presentation/components/TodoForm";
-import { TodoList } from "@/src/presentation/components/TodoList";
-import { EditTodoDialog } from "@/src/presentation/components/EditTodoDialog";
+import { useState, useTransition } from "react";
+import { toast } from "sonner";
+import { createTodo, deleteTodo, updateTodo } from "../actions/todos";
+import { EditTodoDialog } from "../components/EditTodoDialog";
+import { TodoForm } from "../components/TodoForm";
+import { TodoList } from "../components/TodoList";
 import {
   TodoPresenterResult,
   TodoViewModel,
 } from "../presenters/todo.presenter";
-import { toast } from "sonner";
+import { HomePageSkeleton } from "./home-page.skeleton";
 
 export function HomePageScreen({
   initialTodos,
@@ -19,51 +20,45 @@ export function HomePageScreen({
     initialTodos.success ? initialTodos.data ?? [] : []
   );
   const [editingTodo, setEditingTodo] = useState<TodoViewModel | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const handleCreate = async (formData: FormData) => {
-    setIsLoading(true);
-    try {
-    const result = await createTodo(formData);
-    if (result.success && result.data) {
-      setTodos((prev) => [...prev, result.data as TodoViewModel]);
-    }
-    } finally {
-      setIsLoading(false);
-    }
+    startTransition(async () => {
+      const result = await createTodo(formData);
+      if (result.success && result.data) {
+        setTodos((prev) => [...prev, result.data as TodoViewModel]);
+      }
+    });
   };
 
   const handleUpdate = async (formData: FormData) => {
-    setIsLoading(true);
-    try {
-    if (!editingTodo) return;
+    startTransition(async () => {
+      if (!editingTodo) return;
 
-    const result = await updateTodo(editingTodo.id, formData);
-    if (result.success && result.data) {
-      setTodos((prev) =>
-        prev.map((todo: TodoViewModel) =>
-          todo.id === editingTodo.id ? (result.data as TodoViewModel) : todo
-        )
-      );
-      toast.success("Todo updated");
-    }
-    } finally {
-      setIsLoading(false);
-    }
+      const result = await updateTodo(editingTodo.id, formData);
+      if (result.success && result.data) {
+        setTodos((prev) =>
+          prev.map((todo: TodoViewModel) =>
+            todo.id === editingTodo.id ? (result.data as TodoViewModel) : todo
+          )
+        );
+        toast.success("Todo updated");
+      }
+    });
   };
 
   const handleDelete = async (todo: TodoViewModel) => {
-    setIsLoading(true);
-    try {
-    const result = await deleteTodo(todo.id);
-    if (result.success) {
-      setTodos((prev) => prev.filter((t) => t.id !== todo.id));
-      toast.success("Todo deleted");
-    }
-    } finally {
-      setIsLoading(false);
-    }
+    startTransition(async () => {
+      const result = await deleteTodo(todo.id);
+      if (result.success) {
+        setTodos((prev) => prev.filter((t) => t.id !== todo.id));
+        toast.success("Todo deleted");
+      }
+    });
   };
+  if (isPending) {
+    return <HomePageSkeleton />;
+  }
 
   return (
     <main className="container mx-auto py-8 px-4">
@@ -81,7 +76,6 @@ export function HomePageScreen({
             todos={todos}
             onEdit={setEditingTodo}
             onDelete={handleDelete}
-            isLoading={isLoading}
           />
         </div>
       </div>

@@ -53,7 +53,7 @@ export function TodoForm({ todo, onSubmit, submitLabel }: TodoFormProps) {
         />
       </div>
 
-      <Button type="submit" disabled={isPending}>
+      <Button type="submit" isDisabled={isPending}>
         {isPending ? "Submitting..." : submitLabel}
       </Button>
     </form>

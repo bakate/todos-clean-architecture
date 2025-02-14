@@ -3,37 +3,30 @@
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
 import { TodoViewModel } from "../presenters/todo.presenter";
-import { TodoListSkeleton } from "./TodoSkeleton";
 
 interface TodoListProps {
   todos: TodoViewModel[];
   onEdit: (todo: TodoViewModel) => void;
   onDelete: (todo: TodoViewModel) => void;
-  isLoading?: boolean;
 }
 
-export function TodoList({ todos, onEdit, onDelete, isLoading = false }: TodoListProps) {
-  if (isLoading) {
-    return <TodoListSkeleton />;
-  }
+export function TodoList({ todos, onEdit, onDelete }: TodoListProps) {
   if (todos.length === 0) {
     return (
-      <Card>
-        <CardBody>No todos yet. Create one to get started!</CardBody>
+      <Card className="max-w-[400px] h-32">
+        <CardBody className="h-full flex items-center justify-center">
+          No todos yet. Create one to get started!
+        </CardBody>
       </Card>
     );
   }
 
-  const sortedTodos = [...todos].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
-
   return (
     <div className="space-y-4">
-      {sortedTodos.map((todo) => (
-        <Card key={todo.id.toString()} className="max-w-[400px]">
+      {todos.map((todo) => (
+        <Card key={todo.id} className="max-w-[400px]">
           <CardHeader>
-            <div className="flex items-center gap-2 flex-col">
+            <div className="flex gap-2 flex-col">
               <h2 className="text-lg font-semibold leading-tight line-clamp-1">
                 {todo.title}
               </h2>
