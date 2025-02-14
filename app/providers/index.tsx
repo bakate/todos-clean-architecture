@@ -2,6 +2,7 @@
 
 import type { ThemeProviderProps } from "next-themes";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { Toaster } from "sonner";
 
 import { HeroUIProvider } from "@heroui/system";
 import { useRouter } from "next/navigation";
@@ -23,7 +24,10 @@ const Providers = ({ children, themeProps }: ProvidersProps) => {
   const router = useRouter();
   return (
     <HeroUIProvider navigate={router.push}>
-      <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
+      <NextThemesProvider {...themeProps}>
+        <Toaster position="bottom-right" closeButton richColors />
+        {children}
+      </NextThemesProvider>
     </HeroUIProvider>
   );
 };

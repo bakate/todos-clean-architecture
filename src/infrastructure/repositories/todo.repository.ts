@@ -1,5 +1,5 @@
 import { injectable, inject } from "inversify";
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { todos } from "@/src/infrastructure/db/schema";
 import { TodoRepository } from "@/src/domain/repositories/todo.repository";
@@ -60,7 +60,10 @@ export class DrizzleTodoRepository implements TodoRepository {
   }
 
   async findAll(): Promise<TodoEntity[]> {
-    const results = await this.db.select().from(todos);
+    const results = await this.db
+      .select()
+      .from(todos)
+      .orderBy(desc(todos.updatedAt));
 
     return results.map((todo) =>
       TodoEntity.reconstitute({
