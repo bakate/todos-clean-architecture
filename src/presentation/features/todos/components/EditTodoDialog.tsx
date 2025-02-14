@@ -29,7 +29,7 @@ export function EditTodoDialog({
   if (!todo) return null;
 
   return (
-    <Modal isOpen={open} onOpenChange={onOpenChange}>
+    <Modal isOpen={open} onOpenChange={onOpenChange} backdrop="transparent">
       <ModalContent>
         <ModalHeader>Edit Todo</ModalHeader>
         <ModalBody>

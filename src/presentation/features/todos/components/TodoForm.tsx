@@ -36,7 +36,8 @@ export function TodoForm({ todo, onSubmit, submitLabel }: TodoFormProps) {
           name="title"
           defaultValue={todo?.title}
           placeholder="Enter todo title"
-          required
+          isRequired
+          errorMessage="Please enter a title"
         />
       </div>
 
@@ -53,7 +54,7 @@ export function TodoForm({ todo, onSubmit, submitLabel }: TodoFormProps) {
         />
       </div>
 
-      <Button type="submit" isDisabled={isPending}>
+      <Button type="submit" isDisabled={isPending} color="primary">
         {isPending ? "Submitting..." : submitLabel}
       </Button>
     </form>
