@@ -1,23 +1,22 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import "reflect-metadata";
+import { describe, it, expect, Mock, beforeEach, afterEach } from "vitest";
 import { UpdateTodoUseCase } from "@/src/domain/usecases/todo/update-todo.usecase";
 import { TodoEntity, TodoId } from "@/src/domain/entities/todo.entity";
-import { type TodoRepository } from "@/src/domain/repositories/todo.repository";
+import { setupTest, teardownTest } from "./helpers/setup-test";
+import { applicationContainer } from "@/src/infrastructure/dependency-injection/container";
+import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
 
 describe("UpdateTodoUseCase", () => {
   let useCase: UpdateTodoUseCase;
-  let mockRepository: TodoRepository;
+  let mockRepository: any;
 
   beforeEach(() => {
-    mockRepository = {
-      create: vi.fn(),
-      findById: vi.fn(),
-      findAll: vi.fn(),
-      update: vi.fn(),
-      delete: vi.fn(),
-    };
-
-    useCase = new UpdateTodoUseCase(mockRepository);
+    const { repository } = setupTest();
+    mockRepository = repository;
+    useCase = applicationContainer.get<UpdateTodoUseCase>(DI_SYMBOLS.UpdateTodoUseCase);
   });
+
+  afterEach(teardownTest);
 
   it("should update a todo successfully", async () => {
     // Arrange
@@ -31,8 +30,8 @@ describe("UpdateTodoUseCase", () => {
       description: "Updated Description",
     };
 
-    vi.spyOn(mockRepository, "findById").mockResolvedValue(existingTodo);
-    vi.spyOn(mockRepository, "update").mockImplementation(async (todo) => todo);
+    (mockRepository.findById as Mock).mockResolvedValue(existingTodo);
+    (mockRepository.update as Mock).mockImplementation(async (todo) => todo);
 
     // Act
     const result = await useCase.execute(todoId, updateData);
@@ -51,7 +50,7 @@ describe("UpdateTodoUseCase", () => {
       title: "Updated Title",
     };
 
-    vi.spyOn(mockRepository, "findById").mockResolvedValue(null);
+    (mockRepository.findById as Mock).mockResolvedValue(null);
 
     // Act & Assert
     await expect(useCase.execute(todoId, updateData)).rejects.toThrow(

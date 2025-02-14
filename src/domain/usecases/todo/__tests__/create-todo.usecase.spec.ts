@@ -1,23 +1,25 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import "reflect-metadata";
+import { describe, it, expect, beforeEach, afterEach, Mock } from "vitest";
 import { CreateTodoUseCase } from "@/src/domain/usecases/todo/create-todo.usecase";
 import { TodoEntity } from "@/src/domain/entities/todo.entity";
-import { type TodoRepository } from "@/src/domain/repositories/todo.repository";
+import { setupTest, teardownTest } from "./helpers/setup-test";
+import { applicationContainer } from "@/src/infrastructure/dependency-injection/container";
+import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
+import { TodoRepository } from "@/src/domain/repositories/todo.repository";
 
 describe("CreateTodoUseCase", () => {
   let useCase: CreateTodoUseCase;
   let mockRepository: TodoRepository;
 
   beforeEach(() => {
-    mockRepository = {
-      create: vi.fn(),
-      findById: vi.fn(),
-      findAll: vi.fn(),
-      update: vi.fn(),
-      delete: vi.fn(),
-    };
-
-    useCase = new CreateTodoUseCase(mockRepository);
+    const { repository } = setupTest();
+    mockRepository = repository;
+    useCase = applicationContainer.get<CreateTodoUseCase>(
+      DI_SYMBOLS.CreateTodoUseCase
+    );
   });
+
+  afterEach(teardownTest);
 
   it("should create a todo successfully", async () => {
     // Arrange
@@ -27,7 +29,7 @@ describe("CreateTodoUseCase", () => {
     };
 
     const createdTodo = TodoEntity.create(todoData);
-    vi.spyOn(mockRepository, "create").mockResolvedValue(createdTodo);
+    (mockRepository.create as Mock).mockResolvedValue(createdTodo);
 
     // Act
     const result = await useCase.execute(todoData);
@@ -46,7 +48,7 @@ describe("CreateTodoUseCase", () => {
       description: "Test Description",
     };
 
-    vi.spyOn(mockRepository, "create").mockRejectedValue(new Error("DB Error"));
+    (mockRepository.create as Mock).mockRejectedValue(new Error("DB Error"));
 
     // Act & Assert
     await expect(useCase.execute(todoData)).rejects.toThrow("DB Error");

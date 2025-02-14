@@ -1,23 +1,25 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import "reflect-metadata";
+import { describe, it, expect, Mock, beforeEach, afterEach, vi } from "vitest";
 import { ListTodosUseCase } from "@/src/domain/usecases/todo/list-todos.usecase";
 import { TodoEntity } from "@/src/domain/entities/todo.entity";
-import { type TodoRepository } from "@/src/domain/repositories/todo.repository";
+import { setupTest, teardownTest } from "./helpers/setup-test";
+import { applicationContainer } from "@/src/infrastructure/dependency-injection/container";
+import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
+import { TodoRepository } from "@/src/domain/repositories/todo.repository";
 
 describe("ListTodosUseCase", () => {
   let useCase: ListTodosUseCase;
   let mockRepository: TodoRepository;
 
   beforeEach(() => {
-    mockRepository = {
-      create: vi.fn(),
-      findById: vi.fn(),
-      findAll: vi.fn(),
-      update: vi.fn(),
-      delete: vi.fn(),
-    };
-
-    useCase = new ListTodosUseCase(mockRepository);
+    const { repository } = setupTest();
+    mockRepository = repository;
+    useCase = applicationContainer.get<ListTodosUseCase>(
+      DI_SYMBOLS.ListTodosUseCase
+    );
   });
+
+  afterEach(teardownTest);
 
   it("should list all todos successfully", async () => {
     // Arrange
@@ -26,7 +28,7 @@ describe("ListTodosUseCase", () => {
       TodoEntity.create({ title: "Todo 2", description: "Description 2" }),
     ];
 
-    vi.spyOn(mockRepository, "findAll").mockResolvedValue(todos);
+    (mockRepository.findAll as Mock).mockResolvedValue(todos);
 
     // Act
     const result = await useCase.execute();
@@ -40,7 +42,7 @@ describe("ListTodosUseCase", () => {
 
   it("should return empty array when no todos exist", async () => {
     // Arrange
-    vi.spyOn(mockRepository, "findAll").mockResolvedValue([]);
+    (mockRepository.findAll as Mock).mockResolvedValue([]);
 
     // Act
     const result = await useCase.execute();

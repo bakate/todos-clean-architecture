@@ -1,23 +1,25 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import "reflect-metadata";
+import { describe, it, expect, Mock, beforeEach, afterEach } from "vitest";
 import { GetTodoUseCase } from "@/src/domain/usecases/todo/get-todo.usecase";
 import { TodoEntity, TodoId } from "@/src/domain/entities/todo.entity";
-import { type TodoRepository } from "@/src/domain/repositories/todo.repository";
+import { setupTest, teardownTest } from "./helpers/setup-test";
+import { applicationContainer } from "@/src/infrastructure/dependency-injection/container";
+import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
+import { TodoRepository } from "@/src/domain/repositories/todo.repository";
 
 describe("GetTodoUseCase", () => {
   let useCase: GetTodoUseCase;
   let mockRepository: TodoRepository;
 
   beforeEach(() => {
-    mockRepository = {
-      create: vi.fn(),
-      findById: vi.fn(),
-      findAll: vi.fn(),
-      update: vi.fn(),
-      delete: vi.fn(),
-    };
-
-    useCase = new GetTodoUseCase(mockRepository);
+    const { repository } = setupTest();
+    mockRepository = repository;
+    useCase = applicationContainer.get<GetTodoUseCase>(
+      DI_SYMBOLS.GetTodoUseCase
+    );
   });
+
+  afterEach(teardownTest);
 
   it("should get a todo successfully", async () => {
     // Arrange
@@ -26,7 +28,7 @@ describe("GetTodoUseCase", () => {
       title: "Test Todo",
       description: "Test Description",
     });
-    vi.spyOn(mockRepository, "findById").mockResolvedValue(todo);
+    (mockRepository.findById as Mock).mockResolvedValue(todo);
 
     // Act
     const result = await useCase.execute(todoId);
@@ -40,7 +42,7 @@ describe("GetTodoUseCase", () => {
   it("should throw an error if todo is not found", async () => {
     // Arrange
     const todoId = TodoId.create(crypto.randomUUID());
-    vi.spyOn(mockRepository, "findById").mockResolvedValue(null);
+    (mockRepository.findById as Mock).mockResolvedValue(null);
 
     // Act & Assert
     await expect(useCase.execute(todoId)).rejects.toThrow("Todo with id");
