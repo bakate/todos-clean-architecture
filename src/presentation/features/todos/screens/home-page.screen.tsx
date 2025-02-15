@@ -1,7 +1,12 @@
 "use client";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { createTodo, deleteTodo, updateTodo } from "../actions/todos";
+import {
+  createTodo,
+  deleteTodo,
+  toggleTodoComplete,
+  updateTodo,
+} from "../actions/todos";
 import { EditTodoDialog } from "../components/EditTodoDialog";
 import { TodoForm } from "../components/TodoForm";
 import { TodoList } from "../components/TodoList";
@@ -56,6 +61,20 @@ export function HomePageScreen({
       }
     });
   };
+
+  const handleToggleComplete = async (todo: TodoViewModel) => {
+    startTransition(async () => {
+      const result = await toggleTodoComplete(todo.id);
+      if (result.success && result.data) {
+        setTodos((prev) =>
+          prev.map((t) => (t.id === todo.id ? result.data! : t))
+        );
+        toast.success(
+          `Todo ${result.data.completed ? "terminée" : "réactivée"}`
+        );
+      }
+    });
+  };
   if (isPending) {
     return <HomePageSkeleton />;
   }
@@ -76,6 +95,7 @@ export function HomePageScreen({
             todos={todos}
             onEdit={setEditingTodo}
             onDelete={handleDelete}
+            onToggleComplete={handleToggleComplete}
           />
         </div>
       </div>

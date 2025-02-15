@@ -15,6 +15,7 @@ export class ToggleTodoCompleteUseCase {
     if (!todo) {
       throw new Error(`Todo with id ${todoId.toString()} not found`);
     }
-    return this.todoRepository.toggleComplete(todoId);
+    const updatedTodo = todo.toggle();
+    return this.todoRepository.toggleComplete(updatedTodo);
   }
 }

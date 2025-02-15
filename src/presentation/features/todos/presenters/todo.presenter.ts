@@ -4,6 +4,7 @@ export interface TodoViewModel {
   id: string;
   title: string;
   description?: string;
+  completed: boolean;
   createdAt: string;
   updatedAt?: string;
 }
@@ -20,6 +21,7 @@ export class TodoPresenter {
       id: entity.id.toString(),
       title: entity.title,
       description: entity.description,
+      completed: entity.completed,
       createdAt: entity.createdAt.toISOString(),
       updatedAt: entity.updatedAt?.toISOString(),
     };

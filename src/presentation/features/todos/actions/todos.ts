@@ -7,6 +7,7 @@ import {
   DeleteTodoUseCase,
   GetTodoUseCase,
   ListTodosUseCase,
+  ToggleTodoCompleteUseCase,
   UpdateTodoUseCase,
 } from "@/src/domain/usecases/todo";
 import {
@@ -115,6 +116,26 @@ export async function deleteTodo(
     return TodoPresenter.success(undefined);
   } catch (error) {
     console.error("[deleteTodo]", error);
+    return TodoPresenter.error(error);
+  }
+}
+
+export async function toggleTodoComplete(
+  id: string
+): Promise<TodoPresenterResult<TodoViewModel>> {
+  try {
+    const toggleTodoCompleteUseCase =
+      applicationContainer.get<ToggleTodoCompleteUseCase>(
+        DI_SYMBOLS.ToggleTodoCompleteUseCase
+      );
+
+    const todoId = TodoId.create(id);
+    const updatedTodo = await toggleTodoCompleteUseCase.execute(todoId);
+
+    revalidatePath("/");
+    return TodoPresenter.present(updatedTodo);
+  } catch (error) {
+    console.error("[toggleTodoComplete]", error);
     return TodoPresenter.error(error);
   }
 }

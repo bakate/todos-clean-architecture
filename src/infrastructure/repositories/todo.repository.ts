@@ -103,14 +103,14 @@ export class DrizzleTodoRepository implements TodoRepository {
     await this.db.delete(todos).where(eq(todos.id, id.toString()));
   }
 
-  async toggleComplete(id: TodoId): Promise<TodoEntity> {
+  async toggleComplete(todo: TodoEntity): Promise<TodoEntity> {
     const [updated] = await this.db
       .update(todos)
       .set({
-        completed: !todos.completed,
+        completed: todo.completed,
         updatedAt: new Date(),
       })
-      .where(eq(todos.id, id.toString()))
+      .where(eq(todos.id, todo.id.toString()))
       .returning();
 
     return TodoEntity.reconstitute({

@@ -10,7 +10,7 @@ import { TodoRepository } from "@/src/domain/repositories/todo.repository";
 describe("ToggleTodoCompleteUseCase", () => {
   let useCase: ToggleTodoCompleteUseCase;
   let mockTodoId: TodoId;
-  let mockTodo: TodoEntity;
+
   let mockTodoRepository: TodoRepository;
 
   beforeEach(() => {
@@ -20,26 +20,29 @@ describe("ToggleTodoCompleteUseCase", () => {
       DI_SYMBOLS.ToggleTodoCompleteUseCase
     );
     mockTodoId = TodoId.create("123e4567-e89b-12d3-a456-426614174000");
-    mockTodo = TodoEntity.create({
-      title: "Test Todo",
-      description: "Test Description",
-    });
   });
+  afterEach(teardownTest);
 
   it("should toggle completion state of an existing todo", async () => {
     // Arrange
-    (mockTodoRepository.findById as Mock).mockResolvedValue(mockTodo);
-    (mockTodoRepository.toggleComplete as Mock).mockResolvedValue({
-      ...mockTodo,
-      completed: true,
+    const todo = TodoEntity.reconstitute({
+      id: mockTodoId.toString(),
+      title: "Test Todo",
+      description: "Test Description",
+      completed: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
+    (mockTodoRepository.findById as Mock).mockResolvedValue(todo);
+    const toggledTodo = todo.toggle();
+    (mockTodoRepository.toggleComplete as Mock).mockResolvedValue(toggledTodo);
 
     // Act
     const result = await useCase.execute(mockTodoId);
 
     // Assert
     expect(mockTodoRepository.findById).toHaveBeenCalledWith(mockTodoId);
-    expect(mockTodoRepository.toggleComplete).toHaveBeenCalledWith(mockTodoId);
+    expect(mockTodoRepository.toggleComplete).toHaveBeenCalledWith(toggledTodo);
     expect(result.completed).toBe(true);
   });
 
@@ -63,6 +66,4 @@ describe("ToggleTodoCompleteUseCase", () => {
     await expect(useCase.execute(mockTodoId)).rejects.toThrow(error);
     expect(mockTodoRepository.toggleComplete).not.toHaveBeenCalled();
   });
-
-  afterEach(teardownTest);
 });
