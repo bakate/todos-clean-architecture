@@ -3,8 +3,6 @@ import { Container } from "inversify";
 import { db } from "@/src/infrastructure/db/connection";
 import { DI_SYMBOLS } from "./symbols";
 import { todoModule } from "./modules/todo/todo.module";
-import { todoTestModule } from "./modules/todo/todo.module.mock";
-import { isTestEnvironment } from "../config/environment";
 
 // Création du container principal
 export const applicationContainer = new Container({
@@ -13,13 +11,10 @@ export const applicationContainer = new Container({
 });
 
 const initializeContainer = () => {
-  // Binding de la base de données (seulement en production)
-  if (!isTestEnvironment()) {
-    applicationContainer.bind(DI_SYMBOLS.Database).toConstantValue(db);
-  }
-
-  // Chargement des modules en fonction de l'environnement
-  applicationContainer.load(isTestEnvironment() ? todoTestModule : todoModule);
+  // Binding de la base de données
+  applicationContainer.bind(DI_SYMBOLS.Database).toConstantValue(db);
+  // Chargement des modules
+  applicationContainer.load(todoModule);
 };
 
 initializeContainer();

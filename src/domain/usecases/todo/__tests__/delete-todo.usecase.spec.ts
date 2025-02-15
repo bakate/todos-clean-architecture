@@ -3,7 +3,7 @@ import { describe, it, expect, Mock, beforeEach, afterEach, vi } from "vitest";
 import { DeleteTodoUseCase } from "@/src/domain/usecases/todo/delete-todo.usecase";
 import { TodoEntity, TodoId } from "@/src/domain/entities/todo.entity";
 import { setupTest, teardownTest } from "./helpers/setup-test";
-import { applicationContainer } from "@/src/infrastructure/dependency-injection/container";
+import { testContainer } from "@/src/infrastructure/dependency-injection/container.test";
 import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
 import { TodoRepository } from "@/src/domain/repositories/todo.repository";
 
@@ -14,7 +14,7 @@ describe("DeleteTodoUseCase", () => {
   beforeEach(() => {
     const { repository } = setupTest();
     mockRepository = repository;
-    useCase = applicationContainer.get<DeleteTodoUseCase>(
+    useCase = testContainer.get<DeleteTodoUseCase>(
       DI_SYMBOLS.DeleteTodoUseCase
     );
   });

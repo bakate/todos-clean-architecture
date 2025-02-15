@@ -3,7 +3,7 @@ import { describe, it, expect, Mock, beforeEach, afterEach } from "vitest";
 import { UpdateTodoUseCase } from "@/src/domain/usecases/todo/update-todo.usecase";
 import { TodoEntity, TodoId } from "@/src/domain/entities/todo.entity";
 import { setupTest, teardownTest } from "./helpers/setup-test";
-import { applicationContainer } from "@/src/infrastructure/dependency-injection/container";
+import { testContainer } from "@/src/infrastructure/dependency-injection/container.test";
 import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
 
 describe("UpdateTodoUseCase", () => {
@@ -13,7 +13,7 @@ describe("UpdateTodoUseCase", () => {
   beforeEach(() => {
     const { repository } = setupTest();
     mockRepository = repository;
-    useCase = applicationContainer.get<UpdateTodoUseCase>(DI_SYMBOLS.UpdateTodoUseCase);
+    useCase = testContainer.get<UpdateTodoUseCase>(DI_SYMBOLS.UpdateTodoUseCase);
   });
 
   afterEach(teardownTest);

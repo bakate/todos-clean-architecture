@@ -4,7 +4,7 @@ import { Mock, afterEach, beforeEach, describe, expect, it } from "vitest";
 import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
 import { ToggleTodoCompleteUseCase } from "../toggle-todo-complete.usecase";
 import { setupTest, teardownTest } from "./helpers/setup-test";
-import { applicationContainer } from "@/src/infrastructure/dependency-injection/container";
+import { testContainer } from "@/src/infrastructure/dependency-injection/container.test";
 import { TodoRepository } from "@/src/domain/repositories/todo.repository";
 
 describe("ToggleTodoCompleteUseCase", () => {
@@ -16,7 +16,7 @@ describe("ToggleTodoCompleteUseCase", () => {
   beforeEach(() => {
     const { repository } = setupTest();
     mockTodoRepository = repository;
-    useCase = applicationContainer.get<ToggleTodoCompleteUseCase>(
+    useCase = testContainer.get<ToggleTodoCompleteUseCase>(
       DI_SYMBOLS.ToggleTodoCompleteUseCase
     );
     mockTodoId = TodoId.create("123e4567-e89b-12d3-a456-426614174000");

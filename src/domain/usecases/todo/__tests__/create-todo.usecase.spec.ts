@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach, afterEach, Mock } from "vitest";
 import { CreateTodoUseCase } from "@/src/domain/usecases/todo/create-todo.usecase";
 import { TodoEntity } from "@/src/domain/entities/todo.entity";
 import { setupTest, teardownTest } from "./helpers/setup-test";
-import { applicationContainer } from "@/src/infrastructure/dependency-injection/container";
+import { testContainer } from "@/src/infrastructure/dependency-injection/container.test";
 import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
 import { TodoRepository } from "@/src/domain/repositories/todo.repository";
 
@@ -14,7 +14,7 @@ describe("CreateTodoUseCase", () => {
   beforeEach(() => {
     const { repository } = setupTest();
     mockRepository = repository;
-    useCase = applicationContainer.get<CreateTodoUseCase>(
+    useCase = testContainer.get<CreateTodoUseCase>(
       DI_SYMBOLS.CreateTodoUseCase
     );
   });
