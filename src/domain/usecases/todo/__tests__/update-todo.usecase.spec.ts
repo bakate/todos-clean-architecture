@@ -5,15 +5,18 @@ import { TodoEntity, TodoId } from "@/src/domain/entities/todo.entity";
 import { setupTest, teardownTest } from "./helpers/setup-test";
 import { testContainer } from "@/src/infrastructure/dependency-injection/container.test";
 import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
+import { TodoRepository } from "@/src/domain/repositories/todo.repository";
 
 describe("UpdateTodoUseCase", () => {
   let useCase: UpdateTodoUseCase;
-  let mockRepository: any;
+  let mockRepository: TodoRepository;
 
   beforeEach(() => {
     const { repository } = setupTest();
     mockRepository = repository;
-    useCase = testContainer.get<UpdateTodoUseCase>(DI_SYMBOLS.UpdateTodoUseCase);
+    useCase = testContainer.get<UpdateTodoUseCase>(
+      DI_SYMBOLS.UpdateTodoUseCase
+    );
   });
 
   afterEach(teardownTest);

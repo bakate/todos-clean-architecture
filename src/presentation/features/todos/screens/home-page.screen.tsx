@@ -6,6 +6,7 @@ import {
   deleteTodo,
   toggleTodoComplete,
   updateTodo,
+  getTodos,
 } from "../actions/todos";
 import { EditTodoDialog } from "../components/EditTodoDialog";
 import { TodoForm } from "../components/TodoForm";
@@ -24,6 +25,7 @@ export function HomePageScreen({
   const [todos, setTodos] = useState<TodoViewModel[]>(
     initialTodos.success ? initialTodos.data ?? [] : []
   );
+
   const [editingTodo, setEditingTodo] = useState<TodoViewModel | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -31,7 +33,8 @@ export function HomePageScreen({
     startTransition(async () => {
       const result = await createTodo(formData);
       if (result.success && result.data) {
-        setTodos((prev) => [...prev, result.data as TodoViewModel]);
+        await refreshTodos();
+        toast.success("Todo created");
       }
     });
   };
@@ -42,11 +45,7 @@ export function HomePageScreen({
 
       const result = await updateTodo(editingTodo.id, formData);
       if (result.success && result.data) {
-        setTodos((prev) =>
-          prev.map((todo: TodoViewModel) =>
-            todo.id === editingTodo.id ? (result.data as TodoViewModel) : todo
-          )
-        );
+        await refreshTodos();
         toast.success("Todo updated");
       }
     });
@@ -56,19 +55,23 @@ export function HomePageScreen({
     startTransition(async () => {
       const result = await deleteTodo(todo.id);
       if (result.success) {
-        setTodos((prev) => prev.filter((t) => t.id !== todo.id));
-        toast.success("Todo deleted");
+        await refreshTodos();
       }
     });
+  };
+
+  const refreshTodos = async () => {
+    const result = await getTodos();
+    if (result.success && result.data) {
+      setTodos(result.data);
+    }
   };
 
   const handleToggleComplete = async (todo: TodoViewModel) => {
     startTransition(async () => {
       const result = await toggleTodoComplete(todo.id);
       if (result.success && result.data) {
-        setTodos((prev) =>
-          prev.map((t) => (t.id === todo.id ? result.data! : t))
-        );
+        await refreshTodos();
         toast.success(
           `Todo ${result.data.completed ? "terminée" : "réactivée"}`
         );

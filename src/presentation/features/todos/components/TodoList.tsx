@@ -12,7 +12,12 @@ interface TodoListProps {
   onToggleComplete: (todo: TodoViewModel) => void;
 }
 
-export function TodoList({ todos, onEdit, onDelete, onToggleComplete }: TodoListProps) {
+export function TodoList({
+  todos,
+  onEdit,
+  onDelete,
+  onToggleComplete,
+}: TodoListProps) {
   if (todos.length === 0) {
     return (
       <Card className="max-w-[400px] h-32">
@@ -24,16 +29,28 @@ export function TodoList({ todos, onEdit, onDelete, onToggleComplete }: TodoList
   }
 
   return (
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 grid-rows-[auto]">
+    <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-4 grid-rows-[auto]">
       {todos.map((todo) => (
         <Card
           key={todo.id}
-          className={`max-w-[400px] grid grid-rows-[auto_1fr_auto] ${todo.completed ? 'border-success-200 bg-success-50' : ''}`}
+          className={`max-w-[400px] grid grid-rows-[auto_1fr_auto] ${
+            todo.completed ? "border-success-200 bg-success-50" : ""
+          }`}
         >
           <CardHeader className="min-h-[80px]">
             <div className="flex gap-2 flex-col h-full">
-              <h2 className={`text-lg font-semibold leading-tight line-clamp-1 flex items-center gap-2 ${todo.completed ? 'line-through text-gray-500' : ''}`}>
-                <span className={`inline-flex items-center justify-center w-5 h-5 border-2 rounded ${todo.completed ? 'border-success bg-success text-white' : 'border-gray-300'}`}>
+              <h2
+                className={`text-lg font-semibold leading-tight line-clamp-1 flex items-center gap-2 ${
+                  todo.completed ? "line-through text-gray-500" : ""
+                }`}
+              >
+                <span
+                  className={`inline-flex items-center justify-center w-5 h-5 border-2 rounded ${
+                    todo.completed
+                      ? "border-success bg-success text-white"
+                      : "border-gray-300"
+                  }`}
+                >
                   {todo.completed && (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -51,7 +68,11 @@ export function TodoList({ todos, onEdit, onDelete, onToggleComplete }: TodoList
                 </span>
                 {todo.title}
               </h2>
-              <p className={`text-sm text-gray-500 line-clamp-2 ${todo.completed ? 'line-through' : ''}`}>
+              <p
+                className={`text-sm text-gray-500 line-clamp-2 ${
+                  todo.completed ? "line-through" : ""
+                }`}
+              >
                 {todo?.description}
               </p>
             </div>
@@ -76,10 +97,10 @@ export function TodoList({ todos, onEdit, onDelete, onToggleComplete }: TodoList
             <Button
               variant="bordered"
               size="sm"
-              color={todo.completed ? 'warning' : 'success'}
+              color={todo.completed ? "warning" : "success"}
               onPress={() => onToggleComplete(todo)}
             >
-              {todo.completed ? 'Annuler' : 'Terminer'}
+              {todo.completed ? "Annuler" : "Terminer"}
             </Button>
             <Button variant="bordered" size="sm" onPress={() => onEdit(todo)}>
               Edit
