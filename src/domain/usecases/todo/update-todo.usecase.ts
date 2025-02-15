@@ -11,7 +11,7 @@ import {
 export class UpdateTodoUseCase {
   constructor(
     @inject(DI_SYMBOLS.TodoRepository)
-    private readonly todoRepository: TodoRepository
+    protected readonly todoRepository: TodoRepository
   ) {}
 
   async execute(id: TodoId, data: UpdateTodoDTO): Promise<TodoEntity> {

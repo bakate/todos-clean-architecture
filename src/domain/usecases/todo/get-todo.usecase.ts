@@ -7,7 +7,7 @@ import { TodoEntity, TodoId } from "@/src/domain/entities/todo.entity";
 export class GetTodoUseCase {
   constructor(
     @inject(DI_SYMBOLS.TodoRepository)
-    private readonly todoRepository: TodoRepository
+    protected readonly todoRepository: TodoRepository
   ) {}
 
   async execute(id: TodoId): Promise<TodoEntity> {

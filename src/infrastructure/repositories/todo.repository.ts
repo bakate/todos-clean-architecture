@@ -2,7 +2,7 @@ import { injectable, inject } from "inversify";
 import { eq, desc } from "drizzle-orm";
 import { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { todos } from "@/src/infrastructure/db/schema";
-import { TodoRepository } from "@/src/domain/repositories/todo.repository";
+import { type TodoRepository } from "@/src/domain/repositories/todo.repository";
 import {
   TodoEntity,
   TodoId,

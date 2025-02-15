@@ -1,34 +1,40 @@
 import { ContainerModule } from "inversify";
-import { TodoRepository } from "@/src/domain/repositories/todo.repository";
-import { DrizzleTodoRepository } from "@/src/infrastructure/repositories/todo.repository";
+
+import { MockTodoRepository } from "@/src/infrastructure/repositories/__mocks__/todo.repository";
 import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
-import {
-  CreateTodoUseCase,
-  GetTodoUseCase,
-  ListTodosUseCase,
-  UpdateTodoUseCase,
-  DeleteTodoUseCase,
-  ToggleTodoCompleteUseCase,
-} from "@/src/domain/usecases/todo";
+
+import { DrizzleTodoRepository } from "@/src/infrastructure/repositories/todo.repository";
+import { type TodoRepository } from "@/src/domain/repositories/todo.repository";
+
+// Mocks and Real use cases
+import * as RealUseCases from "@/src/domain/usecases/todo";
+import * as MockUseCases from "@/src/domain/usecases/todo/__mocks__";
+
+const { useCaseKeys } = RealUseCases;
+
+const isTestEnvironment = process.env.NODE_ENV === "test";
+
+const TodoRepositoryImpl = isTestEnvironment
+  ? MockTodoRepository
+  : DrizzleTodoRepository;
+
+const useCases = Object.fromEntries(
+  useCaseKeys.map((useCase) => [
+    useCase,
+    isTestEnvironment ? MockUseCases[`Mock${useCase}`] : RealUseCases[useCase],
+  ])
+);
 
 export const todoModule = new ContainerModule((bind) => {
-  // Repositories
+  // Repository
   bind<TodoRepository>(DI_SYMBOLS.TodoRepository)
-    .to(DrizzleTodoRepository)
+    .to(TodoRepositoryImpl)
     .inSingletonScope();
 
   // Use Cases
-  bind(DI_SYMBOLS.CreateTodoUseCase).to(CreateTodoUseCase).inSingletonScope();
-
-  bind(DI_SYMBOLS.GetTodoUseCase).to(GetTodoUseCase).inSingletonScope();
-
-  bind(DI_SYMBOLS.ListTodosUseCase).to(ListTodosUseCase).inSingletonScope();
-
-  bind(DI_SYMBOLS.UpdateTodoUseCase).to(UpdateTodoUseCase).inSingletonScope();
-
-  bind(DI_SYMBOLS.DeleteTodoUseCase).to(DeleteTodoUseCase).inSingletonScope();
-
-  bind(DI_SYMBOLS.ToggleTodoCompleteUseCase)
-    .to(ToggleTodoCompleteUseCase)
-    .inSingletonScope();
+  Object.entries(useCases).forEach(([key, useCase]) => {
+    bind(DI_SYMBOLS[key as keyof typeof DI_SYMBOLS])
+      .to(useCase)
+      .inSingletonScope();
+  });
 });

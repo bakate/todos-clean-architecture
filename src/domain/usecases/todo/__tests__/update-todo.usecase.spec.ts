@@ -1,20 +1,20 @@
 import "reflect-metadata";
-import { describe, it, expect, Mock, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { UpdateTodoUseCase } from "@/src/domain/usecases/todo/update-todo.usecase";
-import { TodoEntity, TodoId } from "@/src/domain/entities/todo.entity";
+import { TodoId } from "@/src/domain/entities/todo.entity";
 import { setupTest, teardownTest } from "./helpers/setup-test";
-import { testContainer } from "@/src/infrastructure/dependency-injection/container.test";
+import { applicationContainer } from "@/src/infrastructure/dependency-injection/container";
 import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
-import { TodoRepository } from "@/src/domain/repositories/todo.repository";
+import { type TodoRepository } from "@/src/domain/repositories/todo.repository";
 
 describe("UpdateTodoUseCase", () => {
   let useCase: UpdateTodoUseCase;
-  let mockRepository: TodoRepository;
+  let repository: TodoRepository;
 
   beforeEach(() => {
-    const { repository } = setupTest();
-    mockRepository = repository;
-    useCase = testContainer.get<UpdateTodoUseCase>(
+    const { repository: repo } = setupTest();
+    repository = repo;
+    useCase = applicationContainer.get<UpdateTodoUseCase>(
       DI_SYMBOLS.UpdateTodoUseCase
     );
   });
@@ -23,8 +23,7 @@ describe("UpdateTodoUseCase", () => {
 
   it("should update a todo successfully", async () => {
     // Arrange
-    const todoId = TodoId.create(crypto.randomUUID());
-    const existingTodo = TodoEntity.create({
+    const todo = await repository.create({
       title: "Original Title",
       description: "Original Description",
     });
@@ -33,15 +32,10 @@ describe("UpdateTodoUseCase", () => {
       description: "Updated Description",
     };
 
-    (mockRepository.findById as Mock).mockResolvedValue(existingTodo);
-    (mockRepository.update as Mock).mockImplementation(async (todo) => todo);
-
     // Act
-    const result = await useCase.execute(todoId, updateData);
+    const result = await useCase.execute(todo.id, updateData);
 
     // Assert
-    expect(mockRepository.findById).toHaveBeenCalledWith(todoId);
-    expect(mockRepository.update).toHaveBeenCalled();
     expect(result.title).toBe(updateData.title);
     expect(result.description).toBe(updateData.description);
   });
@@ -52,8 +46,6 @@ describe("UpdateTodoUseCase", () => {
     const updateData = {
       title: "Updated Title",
     };
-
-    (mockRepository.findById as Mock).mockResolvedValue(null);
 
     // Act & Assert
     await expect(useCase.execute(todoId, updateData)).rejects.toThrow(

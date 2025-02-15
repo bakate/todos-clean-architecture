@@ -7,7 +7,7 @@ import { type TodoRepository } from "../../repositories/todo.repository";
 export class ToggleTodoCompleteUseCase {
   constructor(
     @inject(DI_SYMBOLS.TodoRepository)
-    private readonly todoRepository: TodoRepository
+    protected readonly todoRepository: TodoRepository
   ) {}
 
   async execute(todoId: TodoId): Promise<TodoEntity> {

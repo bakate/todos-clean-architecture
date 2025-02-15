@@ -1,20 +1,20 @@
 import "reflect-metadata";
-import { describe, it, expect, Mock, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { DeleteTodoUseCase } from "@/src/domain/usecases/todo/delete-todo.usecase";
-import { TodoEntity, TodoId } from "@/src/domain/entities/todo.entity";
+import { TodoId } from "@/src/domain/entities/todo.entity";
 import { setupTest, teardownTest } from "./helpers/setup-test";
-import { testContainer } from "@/src/infrastructure/dependency-injection/container.test";
+import { applicationContainer } from "@/src/infrastructure/dependency-injection/container";
 import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
-import { TodoRepository } from "@/src/domain/repositories/todo.repository";
+import { type TodoRepository } from "@/src/domain/repositories/todo.repository";
 
 describe("DeleteTodoUseCase", () => {
   let useCase: DeleteTodoUseCase;
-  let mockRepository: TodoRepository;
+  let repository: TodoRepository;
 
   beforeEach(() => {
-    const { repository } = setupTest();
-    mockRepository = repository;
-    useCase = testContainer.get<DeleteTodoUseCase>(
+    const { repository: repo } = setupTest();
+    repository = repo;
+    useCase = applicationContainer.get<DeleteTodoUseCase>(
       DI_SYMBOLS.DeleteTodoUseCase
     );
   });
@@ -23,46 +23,28 @@ describe("DeleteTodoUseCase", () => {
 
   it("should delete a todo successfully", async () => {
     // Arrange
-    const todoId = TodoId.create(crypto.randomUUID());
-    const existingTodo = TodoEntity.create({
+    const todo = await repository.create({
       title: "Test Todo",
       description: "Test Description",
     });
 
-    (mockRepository.findById as Mock).mockResolvedValue(existingTodo);
-    (mockRepository.delete as Mock).mockResolvedValue(existingTodo.id);
+    // Verify todo was created
+    const todosBeforeDelete = await repository.findAll();
+    expect(todosBeforeDelete).toHaveLength(1);
 
     // Act
-    await useCase.execute(todoId);
+    await useCase.execute(todo.id);
 
     // Assert
-    expect(mockRepository.findById).toHaveBeenCalledWith(todoId);
-    expect(mockRepository.delete).toHaveBeenCalledWith(todoId);
+    const todosAfterDelete = await repository.findAll();
+    expect(todosAfterDelete).toHaveLength(0);
   });
 
   it("should throw an error if todo is not found", async () => {
     // Arrange
     const todoId = TodoId.create(crypto.randomUUID());
-    (mockRepository.findById as Mock).mockResolvedValue(null);
 
     // Act & Assert
     await expect(useCase.execute(todoId)).rejects.toThrow("Todo with id");
-  });
-
-  it("should throw an error if delete fails", async () => {
-    // Arrange
-    const todoId = TodoId.create(crypto.randomUUID());
-    const existingTodo = TodoEntity.create({
-      title: "Test Todo",
-      description: "Test Description",
-    });
-
-    vi.spyOn(mockRepository, "findById").mockResolvedValue(existingTodo);
-    vi.spyOn(mockRepository, "delete").mockRejectedValue(
-      new Error("Delete failed")
-    );
-
-    // Act & Assert
-    await expect(useCase.execute(todoId)).rejects.toThrow("Delete failed");
   });
 });

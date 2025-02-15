@@ -1,20 +1,20 @@
 import "reflect-metadata";
-import { describe, it, expect, Mock, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { GetTodoUseCase } from "@/src/domain/usecases/todo/get-todo.usecase";
-import { TodoEntity, TodoId } from "@/src/domain/entities/todo.entity";
+import { TodoId } from "@/src/domain/entities/todo.entity";
 import { setupTest, teardownTest } from "./helpers/setup-test";
-import { testContainer } from "@/src/infrastructure/dependency-injection/container.test";
+import { applicationContainer } from "@/src/infrastructure/dependency-injection/container";
 import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
-import { TodoRepository } from "@/src/domain/repositories/todo.repository";
+import { type TodoRepository } from "@/src/domain/repositories/todo.repository";
 
 describe("GetTodoUseCase", () => {
   let useCase: GetTodoUseCase;
-  let mockRepository: TodoRepository;
+  let repository: TodoRepository;
 
   beforeEach(() => {
-    const { repository } = setupTest();
-    mockRepository = repository;
-    useCase = testContainer.get<GetTodoUseCase>(
+    const { repository: repo } = setupTest();
+    repository = repo;
+    useCase = applicationContainer.get<GetTodoUseCase>(
       DI_SYMBOLS.GetTodoUseCase
     );
   });
@@ -23,26 +23,24 @@ describe("GetTodoUseCase", () => {
 
   it("should get a todo successfully", async () => {
     // Arrange
-    const todoId = TodoId.create(crypto.randomUUID());
-    const todo = TodoEntity.create({
+    const todo = await repository.create({
       title: "Test Todo",
       description: "Test Description",
     });
-    (mockRepository.findById as Mock).mockResolvedValue(todo);
 
     // Act
-    const result = await useCase.execute(todoId);
+    const result = await useCase.execute(todo.id);
 
     // Assert
-    expect(mockRepository.findById).toHaveBeenCalledWith(todoId);
     expect(result).toBeDefined();
-    expect(result.title).toBe("Test Todo");
+    expect(result.id).toEqual(todo.id);
+    expect(result.title).toBe(todo.title);
+    expect(result.description).toBe(todo.description);
   });
 
   it("should throw an error if todo is not found", async () => {
     // Arrange
     const todoId = TodoId.create(crypto.randomUUID());
-    (mockRepository.findById as Mock).mockResolvedValue(null);
 
     // Act & Assert
     await expect(useCase.execute(todoId)).rejects.toThrow("Todo with id");
