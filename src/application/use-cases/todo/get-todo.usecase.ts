@@ -1,7 +1,7 @@
-import { inject, injectable } from "inversify";
+import { type TodoRepository } from "@/src/application/repositories/todo.repository.interface";
+import { TodoEntity, TodoId } from "@/src/entities/todo.entity";
 import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
-import { type TodoRepository } from "@/src/domain/repositories/todo.repository";
-import { TodoEntity, TodoId } from "@/src/domain/entities/todo.entity";
+import { inject, injectable } from "inversify";
 
 @injectable()
 export class GetTodoUseCase {

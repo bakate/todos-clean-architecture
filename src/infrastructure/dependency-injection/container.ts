@@ -1,9 +1,9 @@
-import "reflect-metadata";
-import { Container } from "inversify";
+import { TodoRepository } from "@/src/application/repositories/todo.repository.interface";
 import { db } from "@/src/infrastructure/db/connection";
-import { DI_SYMBOLS } from "./symbols";
+import { Container } from "inversify";
+import "reflect-metadata";
 import { todoModule } from "./modules/todo/todo.module";
-import { TodoRepository } from "@/src/domain/repositories/todo.repository";
+import { DI_SYMBOLS } from "./symbols";
 
 // Création du container principal
 export const applicationContainer = new Container({

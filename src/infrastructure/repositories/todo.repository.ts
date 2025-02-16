@@ -1,9 +1,5 @@
-import {
-  CreateTodoDTO,
-  TodoEntity,
-  TodoId,
-} from "@/src/domain/entities/todo.entity";
-import { type TodoRepository } from "@/src/domain/repositories/todo.repository";
+import { type TodoRepository } from "@/src/application/repositories/todo.repository.interface";
+import { CreateTodoDTO, TodoEntity, TodoId } from "@/src/entities/todo.entity";
 import * as schema from "@/src/infrastructure/db/schema";
 import { todos } from "@/src/infrastructure/db/schema";
 import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";

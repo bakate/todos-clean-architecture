@@ -1,7 +1,5 @@
 "use server";
 
-import { applicationContainer } from "@/src/infrastructure/dependency-injection";
-import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
 import {
   CreateTodoUseCase,
   DeleteTodoUseCase,
@@ -9,19 +7,21 @@ import {
   ListTodosUseCase,
   ToggleTodoCompleteUseCase,
   UpdateTodoUseCase,
-} from "@/src/domain/usecases/todo";
+} from "@/src/application/use-cases/todo";
 import {
   CreateTodoSchema,
   TodoId,
   UpdateTodoSchema,
-} from "@/src/domain/entities/todo.entity";
+} from "@/src/entities/todo.entity";
+import { applicationContainer } from "@/src/infrastructure/dependency-injection";
+import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
 
+import { revalidatePath } from "next/cache";
 import {
   TodoPresenter,
   TodoPresenterResult,
   TodoViewModel,
 } from "../presenters/todo.presenter";
-import { revalidatePath } from "next/cache";
 
 export async function getTodos(): Promise<
   TodoPresenterResult<TodoViewModel[]>

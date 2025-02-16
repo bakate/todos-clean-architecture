@@ -1,8 +1,4 @@
-import {
-  TodoEntity,
-  TodoId,
-  CreateTodoDTO,
-} from "@/src/domain/entities/todo.entity";
+import { CreateTodoDTO, TodoEntity, TodoId } from "@/src/entities/todo.entity";
 
 export interface TodoRepository {
   create(todo: CreateTodoDTO): Promise<TodoEntity>;

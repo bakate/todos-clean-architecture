@@ -1,11 +1,7 @@
 import { injectable } from "inversify";
 
-import {
-  TodoEntity,
-  TodoId,
-  CreateTodoDTO,
-} from "@/src/domain/entities/todo.entity";
-import { type TodoRepository } from "@/src/domain/repositories/todo.repository";
+import { TodoEntity, TodoId, CreateTodoDTO } from "@/src/entities/todo.entity";
+import { type TodoRepository } from "@/src/application/repositories/todo.repository.interface";
 
 @injectable()
 export class MockTodoRepository implements TodoRepository {

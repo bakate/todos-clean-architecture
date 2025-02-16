@@ -1,13 +1,9 @@
 import { injectable } from "inversify";
 
-import {
-  TodoEntity,
-  TodoId,
-  UpdateTodoDTO,
-} from "@/src/domain/entities/todo.entity";
+import { TodoEntity, TodoId, UpdateTodoDTO } from "@/src/entities/todo.entity";
 
 import { UpdateTodoUseCase } from "../update-todo.usecase";
-import { type TodoRepository } from "@/src/domain/repositories/todo.repository";
+import { type TodoRepository } from "@/src/application/repositories/todo.repository.interface";
 
 @injectable()
 export class MockUpdateTodoUseCase extends UpdateTodoUseCase {

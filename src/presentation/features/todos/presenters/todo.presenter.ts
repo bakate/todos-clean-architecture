@@ -1,4 +1,4 @@
-import { TodoEntity } from "@/src/domain/entities/todo.entity";
+import { TodoEntity } from "@/src/entities/todo.entity";
 
 export interface TodoViewModel {
   id: string;

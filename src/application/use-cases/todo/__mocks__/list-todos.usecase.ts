@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
-import { TodoEntity } from "@/src/domain/entities/todo.entity";
-import { type TodoRepository } from "@/src/domain/repositories/todo.repository";
+import { TodoEntity } from "@/src/entities/todo.entity";
+import { type TodoRepository } from "@/src/application/repositories/todo.repository.interface";
 import { ListTodosUseCase } from "../list-todos.usecase";
 
 @injectable()

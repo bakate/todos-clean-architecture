@@ -1,4 +1,4 @@
-import { TodoRepository } from "@/src/domain/repositories/todo.repository";
+import { TodoRepository } from "@/src/application/repositories/todo.repository.interface";
 import {
   CreateTodoUseCase,
   DeleteTodoUseCase,
@@ -6,7 +6,7 @@ import {
   ListTodosUseCase,
   ToggleTodoCompleteUseCase,
   UpdateTodoUseCase,
-} from "@/src/domain/usecases/todo";
+} from "@/src/application/use-cases/todo";
 import type { DrizzleTodoRepository } from "@/src/infrastructure/repositories/todo.repository";
 
 export const DI_SYMBOLS = {
