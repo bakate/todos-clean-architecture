@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [env()],
   test: {
     environment: "jsdom",
-    include: ["src/**/*.{test,spec}.{ts,tsx}"],
+    include: ["tests/unit/**/*.{test,spec}.{ts,tsx}"],
     globals: true,
     coverage: {
       provider: "istanbul",

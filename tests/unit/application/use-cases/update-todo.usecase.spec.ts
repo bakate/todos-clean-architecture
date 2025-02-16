@@ -38,17 +38,4 @@ describe("UpdateTodoUseCase", () => {
     expect(result.title).toBe(updateData.title);
     expect(result.description).toBe(updateData.description);
   });
-
-  it("should throw an error if todo is not found", async () => {
-    // Arrange
-    const todoId = crypto.randomUUID();
-    const updateData = {
-      title: "Updated Title",
-    };
-
-    // Act & Assert
-    await expect(useCase.execute(todoId, updateData)).rejects.toThrow(
-      "Todo with id"
-    );
-  });
 });

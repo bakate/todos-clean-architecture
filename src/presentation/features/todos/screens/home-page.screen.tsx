@@ -1,20 +1,20 @@
 "use client";
+import {
+  TodoPresenterResult,
+  TodoViewModel,
+} from "@/src/interface-adapters/presenters/todo.presenter";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import {
   createTodo,
   deleteTodo,
+  getTodos,
   toggleTodoComplete,
   updateTodo,
-  getTodos,
 } from "../actions/todos";
 import { EditTodoDialog } from "../components/EditTodoDialog";
 import { TodoForm } from "../components/TodoForm";
 import { TodoList } from "../components/TodoList";
-import {
-  TodoPresenterResult,
-  TodoViewModel,
-} from "../presenters/todo.presenter";
 import { HomePageSkeleton } from "./home-page.skeleton";
 
 export function HomePageScreen({

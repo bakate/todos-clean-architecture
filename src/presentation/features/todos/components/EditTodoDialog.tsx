@@ -1,5 +1,6 @@
 "use client";
 
+import { TodoViewModel } from "@/src/interface-adapters/presenters/todo.presenter";
 import {
   Button,
   Modal,
@@ -9,7 +10,6 @@ import {
   ModalHeader,
 } from "@heroui/react";
 import { useTransition } from "react";
-import { TodoViewModel } from "../presenters/todo.presenter";
 import { TodoForm } from "./TodoForm";
 
 interface EditTodoDialogProps {
