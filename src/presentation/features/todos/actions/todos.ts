@@ -1,20 +1,18 @@
 "use server";
 
 import {
-  DeleteTodoUseCase,
   GetTodoUseCase,
   ListTodosUseCase,
   ToggleTodoCompleteUseCase,
-  UpdateTodoUseCase,
 } from "@/src/application/use-cases/todo";
-import {
-  CreateTodoSchema,
-  UpdateTodoSchema,
-} from "@/src/entities/models/todo.entity";
 import { applicationContainer } from "@/src/infrastructure/dependency-injection";
 import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
 
-import type { CreateTodoController } from "@/src/interface-adapters/controllers/todos";
+import {
+  UpdateTodoController,
+  type CreateTodoController,
+  type DeleteTodoController,
+} from "@/src/interface-adapters/controllers/todos";
 import {
   TodoPresenter,
   TodoPresenterResult,
@@ -54,18 +52,16 @@ export async function createTodo(
   formData: FormData
 ): Promise<TodoPresenterResult<TodoViewModel>> {
   const raw = {
-    title: formData.get("title"),
-    description: formData.get("description"),
+    title: formData.get("title") as string,
+    description: formData.get("description") as string,
   };
 
   try {
-    const validatedData = CreateTodoSchema.parse(raw);
-
     const createTodoController = applicationContainer.get<CreateTodoController>(
       DI_SYMBOLS.CreateTodoController
     );
 
-    const todo = await createTodoController.execute(validatedData);
+    const todo = await createTodoController.execute(raw);
 
     revalidatePath("/");
     return todo;
@@ -80,20 +76,18 @@ export async function updateTodo(
   formData: FormData
 ): Promise<TodoPresenterResult<TodoViewModel>> {
   const raw = {
-    title: formData.get("title"),
-    description: formData.get("description"),
+    title: formData.get("title") as string,
+    description: formData.get("description") as string,
   };
 
   try {
-    const validatedData = UpdateTodoSchema.parse(raw);
-
-    const updateTodoUseCase = applicationContainer.get<UpdateTodoUseCase>(
-      DI_SYMBOLS.UpdateTodoUseCase
+    const updateTodoController = applicationContainer.get<UpdateTodoController>(
+      DI_SYMBOLS.UpdateTodoController
     );
 
-    const todo = await updateTodoUseCase.execute(id, validatedData);
+    const todo = await updateTodoController.execute(id, raw);
     revalidatePath("/");
-    return TodoPresenter.present(todo);
+    return todo;
   } catch (error) {
     console.error("[updateTodo]", error);
     return TodoPresenter.error(error);
@@ -104,13 +98,13 @@ export async function deleteTodo(
   id: string
 ): Promise<TodoPresenterResult<undefined>> {
   try {
-    const deleteTodoUseCase = applicationContainer.get<DeleteTodoUseCase>(
-      DI_SYMBOLS.DeleteTodoUseCase
+    const deleteTodoController = applicationContainer.get<DeleteTodoController>(
+      DI_SYMBOLS.DeleteTodoController
     );
 
-    await deleteTodoUseCase.execute(id);
+    const response = await deleteTodoController.execute(id);
     revalidatePath("/");
-    return TodoPresenter.success(undefined);
+    return response;
   } catch (error) {
     console.error("[deleteTodo]", error);
     return TodoPresenter.error(error);

@@ -5,6 +5,7 @@ import z from "zod";
 import type { TodoRepository } from "@/src/application/repositories/todo.repository.interface";
 import { type TodoEntity } from "@/src/entities/models/todo.entity";
 import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection";
+import { TodoPresenter } from "@/src/interface-adapters/presenters/todo.presenter";
 import { inject } from "inversify";
 
 export class DeleteTodoController {
@@ -29,5 +30,6 @@ export class DeleteTodoController {
     }
 
     await this.deleteTodoUseCase.execute(todoId);
+    return TodoPresenter.success(undefined);
   }
 }
