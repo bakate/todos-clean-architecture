@@ -1,9 +1,9 @@
-import { TodoEntity } from "@/src/entities/todo.entity";
+import { TodoEntity } from "@/src/entities/models/todo.entity";
 
 export interface TodoViewModel {
   id: string;
   title: string;
-  description?: string;
+  description: string | null;
   completed: boolean;
   createdAt: string;
   updatedAt?: string;

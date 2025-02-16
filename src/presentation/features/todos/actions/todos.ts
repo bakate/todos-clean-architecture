@@ -1,7 +1,6 @@
 "use server";
 
 import {
-  CreateTodoUseCase,
   DeleteTodoUseCase,
   GetTodoUseCase,
   ListTodosUseCase,
@@ -10,18 +9,18 @@ import {
 } from "@/src/application/use-cases/todo";
 import {
   CreateTodoSchema,
-  TodoId,
   UpdateTodoSchema,
-} from "@/src/entities/todo.entity";
+} from "@/src/entities/models/todo.entity";
 import { applicationContainer } from "@/src/infrastructure/dependency-injection";
 import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
 
-import { revalidatePath } from "next/cache";
+import type { CreateTodoController } from "@/src/interface-adapters/controllers/todos";
 import {
   TodoPresenter,
   TodoPresenterResult,
   TodoViewModel,
-} from "../presenters/todo.presenter";
+} from "@/src/interface-adapters/presenters/todo.presenter";
+import { revalidatePath } from "next/cache";
 
 export async function getTodos(): Promise<
   TodoPresenterResult<TodoViewModel[]>
@@ -43,7 +42,7 @@ export async function getTodoById(id: string) {
     const getTodoUseCase = applicationContainer.get<GetTodoUseCase>(
       DI_SYMBOLS.GetTodoUseCase
     );
-    const todo = await getTodoUseCase.execute(TodoId.create(id));
+    const todo = await getTodoUseCase.execute(id);
     return TodoPresenter.present(todo);
   } catch (error) {
     console.error("[getTodoById]", error);
@@ -62,13 +61,14 @@ export async function createTodo(
   try {
     const validatedData = CreateTodoSchema.parse(raw);
 
-    const createTodoUseCase = applicationContainer.get<CreateTodoUseCase>(
-      DI_SYMBOLS.CreateTodoUseCase
+    const createTodoController = applicationContainer.get<CreateTodoController>(
+      DI_SYMBOLS.CreateTodoController
     );
 
-    const todo = await createTodoUseCase.execute(validatedData);
+    const todo = await createTodoController.execute(validatedData);
+
     revalidatePath("/");
-    return TodoPresenter.present(todo);
+    return todo;
   } catch (error) {
     console.error("[createTodo]", error);
     return TodoPresenter.error(error);
@@ -91,10 +91,7 @@ export async function updateTodo(
       DI_SYMBOLS.UpdateTodoUseCase
     );
 
-    const todo = await updateTodoUseCase.execute(
-      TodoId.create(id),
-      validatedData
-    );
+    const todo = await updateTodoUseCase.execute(id, validatedData);
     revalidatePath("/");
     return TodoPresenter.present(todo);
   } catch (error) {
@@ -111,7 +108,7 @@ export async function deleteTodo(
       DI_SYMBOLS.DeleteTodoUseCase
     );
 
-    await deleteTodoUseCase.execute(TodoId.create(id));
+    await deleteTodoUseCase.execute(id);
     revalidatePath("/");
     return TodoPresenter.success(undefined);
   } catch (error) {
@@ -121,7 +118,7 @@ export async function deleteTodo(
 }
 
 export async function toggleTodoComplete(
-  id: string
+  todoId: string
 ): Promise<TodoPresenterResult<TodoViewModel>> {
   try {
     const toggleTodoCompleteUseCase =
@@ -129,7 +126,6 @@ export async function toggleTodoComplete(
         DI_SYMBOLS.ToggleTodoCompleteUseCase
       );
 
-    const todoId = TodoId.create(id);
     const updatedTodo = await toggleTodoCompleteUseCase.execute(todoId);
 
     revalidatePath("/");
