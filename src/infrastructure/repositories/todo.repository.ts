@@ -1,15 +1,11 @@
 import { type TodoRepository } from "@/src/application/repositories/todo.repository.interface";
-import { CreateTodoDTO, TodoEntity, TodoId } from "@/src/entities/todo.entity";
+import { CreateTodoDTO, TodoEntity } from "@/src/entities/models/todo.entity";
 import * as schema from "@/src/infrastructure/db/schema";
 import { todos } from "@/src/infrastructure/db/schema";
 import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
 import { desc, eq } from "drizzle-orm";
 import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import { inject, injectable } from "inversify";
-
-// Fonction utilitaire pour convertir null en undefined
-const nullToUndefined = <T>(value: T | null): T | undefined =>
-  value === null ? undefined : value;
 
 @injectable()
 export class DrizzleTodoRepository implements TodoRepository {
@@ -26,33 +22,17 @@ export class DrizzleTodoRepository implements TodoRepository {
       })
       .returning();
 
-    return TodoEntity.reconstitute({
-      id: inserted.id,
-      title: inserted.title,
-      description: nullToUndefined(inserted.description),
-      completed: inserted.completed,
-      createdAt: inserted.createdAt,
-      updatedAt: inserted.updatedAt,
-    });
+    return inserted;
   }
 
-  async findById(id: TodoId): Promise<TodoEntity | null> {
-    const result = await this.db
+  async findById(id: TodoEntity["id"]): Promise<TodoEntity | null> {
+    const [result] = await this.db
       .select()
       .from(todos)
       .where(eq(todos.id, id.toString()))
       .limit(1);
 
-    if (!result.length) return null;
-
-    return TodoEntity.reconstitute({
-      id: result[0].id,
-      title: result[0].title,
-      description: nullToUndefined(result[0].description),
-      completed: result[0].completed,
-      createdAt: result[0].createdAt,
-      updatedAt: result[0].updatedAt,
-    });
+    return result;
   }
 
   async findAll(): Promise<TodoEntity[]> {
@@ -61,19 +41,13 @@ export class DrizzleTodoRepository implements TodoRepository {
       .from(todos)
       .orderBy(desc(todos.updatedAt));
 
-    return results.map((todo) =>
-      TodoEntity.reconstitute({
-        id: todo.id,
-        title: todo.title,
-        description: nullToUndefined(todo.description),
-        completed: todo.completed,
-        createdAt: todo.createdAt,
-        updatedAt: todo.updatedAt,
-      })
-    );
+    return results;
   }
 
-  async update(todo: TodoEntity): Promise<TodoEntity> {
+  async update(
+    todoId: TodoEntity["id"],
+    todo: TodoEntity
+  ): Promise<TodoEntity> {
     const [updated] = await this.db
       .update(todos)
       .set({
@@ -82,20 +56,13 @@ export class DrizzleTodoRepository implements TodoRepository {
         completed: todo.completed,
         updatedAt: new Date(),
       })
-      .where(eq(todos.id, todo.id.toString()))
+      .where(eq(todos.id, todoId.toString()))
       .returning();
 
-    return TodoEntity.reconstitute({
-      id: updated.id,
-      title: updated.title,
-      description: nullToUndefined(updated.description),
-      completed: updated.completed,
-      createdAt: updated.createdAt,
-      updatedAt: updated.updatedAt,
-    });
+    return updated;
   }
 
-  async delete(id: TodoId): Promise<void> {
+  async delete(id: TodoEntity["id"]): Promise<void> {
     await this.db.delete(todos).where(eq(todos.id, id.toString()));
   }
 
@@ -109,13 +76,6 @@ export class DrizzleTodoRepository implements TodoRepository {
       .where(eq(todos.id, todo.id.toString()))
       .returning();
 
-    return TodoEntity.reconstitute({
-      id: updated.id,
-      title: updated.title,
-      description: nullToUndefined(updated.description),
-      completed: updated.completed,
-      createdAt: updated.createdAt,
-      updatedAt: updated.updatedAt,
-    });
+    return updated;
   }
 }

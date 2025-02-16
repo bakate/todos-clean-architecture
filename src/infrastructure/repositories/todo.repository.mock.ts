@@ -25,9 +25,7 @@ export class MockTodoRepository implements TodoRepository {
   }
 
   async findById(id: TodoEntity["id"]): Promise<TodoEntity | null> {
-    return (
-      this.todos.find((todo) => todo.id.toString() === id.toString()) || null
-    );
+    return this.todos.find((todo) => todo.id === id) || null;
   }
 
   async findAll(): Promise<TodoEntity[]> {
