@@ -11,12 +11,7 @@ export class CreateTodoController {
   constructor(private readonly createTodoUseCase: CreateTodoUseCase) {}
 
   async execute(input: CreateTodoDTO) {
-    const {
-      data,
-      error: inputParseError,
-      success,
-    } = CreateTodoSchema.safeParse(input);
-    console.log({ inputParseError, data, success, input });
+    const { data, error: inputParseError } = CreateTodoSchema.safeParse(input);
 
     if (inputParseError) {
       throw new InputParseError("Invalid data", { cause: inputParseError });

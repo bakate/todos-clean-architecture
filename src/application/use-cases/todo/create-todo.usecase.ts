@@ -7,7 +7,7 @@ import { inject, injectable } from "inversify";
 export class CreateTodoUseCase {
   constructor(
     @inject(DI_SYMBOLS.TodoRepository)
-    protected readonly todoRepository: TodoRepository
+    private readonly todoRepository: TodoRepository
   ) {}
 
   async execute(data: CreateTodoDTO): Promise<TodoEntity> {
