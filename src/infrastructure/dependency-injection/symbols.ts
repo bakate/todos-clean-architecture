@@ -7,6 +7,7 @@ import {
   ToggleTodoCompleteUseCase,
   UpdateTodoUseCase,
 } from "@/src/domain/usecases/todo";
+import type { DrizzleTodoRepository } from "@/src/infrastructure/repositories/todo.repository";
 
 export const DI_SYMBOLS = {
   // Infrastructure
@@ -26,7 +27,7 @@ export const DI_SYMBOLS = {
 
 export interface DI_TYPES {
   // Infrastructure
-  Database: unknown; // On précisera le type plus tard si nécessaire
+  Database: DrizzleTodoRepository;
 
   // Repositories
   TodoRepository: TodoRepository;

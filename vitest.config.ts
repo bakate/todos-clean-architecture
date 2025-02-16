@@ -1,19 +1,23 @@
 /// <reference types="vitest" />
 
-import { defineConfig } from 'vitest/config'
-import react from '@vitejs/plugin-react'
-import { resolve } from 'path'
+import { resolve } from "path";
+import env from "vite-plugin-env-compatible";
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [env()],
   test: {
-    environment: 'jsdom',
-    include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    environment: "jsdom",
+    include: ["src/**/*.{test,spec}.{ts,tsx}"],
     globals: true,
+    coverage: {
+      provider: "istanbul",
+      reportsDirectory: "./tests/coverage",
+    },
   },
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src'),
+      "@": resolve(__dirname, "./"),
     },
   },
-})
+});

@@ -1,15 +1,15 @@
-import { injectable, inject } from "inversify";
-import { eq, desc } from "drizzle-orm";
-import { PostgresJsDatabase } from "drizzle-orm/postgres-js";
-import { todos } from "@/src/infrastructure/db/schema";
-import { type TodoRepository } from "@/src/domain/repositories/todo.repository";
 import {
+  CreateTodoDTO,
   TodoEntity,
   TodoId,
-  CreateTodoDTO,
 } from "@/src/domain/entities/todo.entity";
+import { type TodoRepository } from "@/src/domain/repositories/todo.repository";
 import * as schema from "@/src/infrastructure/db/schema";
+import { todos } from "@/src/infrastructure/db/schema";
 import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
+import { desc, eq } from "drizzle-orm";
+import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
+import { inject, injectable } from "inversify";
 
 // Fonction utilitaire pour convertir null en undefined
 const nullToUndefined = <T>(value: T | null): T | undefined =>
@@ -19,7 +19,7 @@ const nullToUndefined = <T>(value: T | null): T | undefined =>
 export class DrizzleTodoRepository implements TodoRepository {
   constructor(
     @inject(DI_SYMBOLS.Database)
-    private readonly db: PostgresJsDatabase<typeof schema>
+    private readonly db: NeonHttpDatabase<typeof schema>
   ) {}
   async create(todoData: CreateTodoDTO): Promise<TodoEntity> {
     const [inserted] = await this.db
