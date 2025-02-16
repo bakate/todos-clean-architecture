@@ -10,6 +10,7 @@ import {
 import type { DrizzleTodoRepository } from "@/src/infrastructure/repositories/todo.repository";
 import type { CreateTodoController } from "@/src/interface-adapters/controllers/todos";
 import type { DeleteTodoController } from "@/src/interface-adapters/controllers/todos/delete-todo.controller";
+import type { ToggleTodoCompleteController } from "@/src/interface-adapters/controllers/todos/toggle-todo-complete.controller";
 import type { UpdateTodoController } from "@/src/interface-adapters/controllers/todos/update-todo.controller";
 
 export const DI_SYMBOLS = {
@@ -31,6 +32,7 @@ export const DI_SYMBOLS = {
   CreateTodoController: Symbol.for("CreateTodoController"),
   DeleteTodoController: Symbol.for("DeleteTodoController"),
   UpdateTodoController: Symbol.for("UpdateTodoController"),
+  ToggleTodoCompleteController: Symbol.for("ToggleTodoCompleteController"),
 } as const;
 
 export interface DI_TYPES {
@@ -52,4 +54,5 @@ export interface DI_TYPES {
   CreateTodoController: CreateTodoController;
   DeleteTodoController: DeleteTodoController;
   UpdateTodoController: UpdateTodoController;
+  ToggleTodoCompleteController: ToggleTodoCompleteController;
 }

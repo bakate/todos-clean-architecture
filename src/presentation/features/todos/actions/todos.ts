@@ -3,7 +3,6 @@
 import {
   GetTodoUseCase,
   ListTodosUseCase,
-  ToggleTodoCompleteUseCase,
 } from "@/src/application/use-cases/todo";
 import { applicationContainer } from "@/src/infrastructure/dependency-injection";
 import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
@@ -13,6 +12,7 @@ import {
   type CreateTodoController,
   type DeleteTodoController,
 } from "@/src/interface-adapters/controllers/todos";
+import type { ToggleTodoCompleteController } from "@/src/interface-adapters/controllers/todos/toggle-todo-complete.controller";
 import {
   TodoPresenter,
   TodoPresenterResult,
@@ -115,15 +115,15 @@ export async function toggleTodoComplete(
   todoId: string
 ): Promise<TodoPresenterResult<TodoViewModel>> {
   try {
-    const toggleTodoCompleteUseCase =
-      applicationContainer.get<ToggleTodoCompleteUseCase>(
-        DI_SYMBOLS.ToggleTodoCompleteUseCase
+    const toggleTodoCompleteController =
+      applicationContainer.get<ToggleTodoCompleteController>(
+        DI_SYMBOLS.ToggleTodoCompleteController // change DI_SYMBOLS.ToggleTodoCompleteUseCase to DI_SYMBOLS.ToggleTodoCompleteController
       );
 
-    const updatedTodo = await toggleTodoCompleteUseCase.execute(todoId);
+    const updatedTodo = await toggleTodoCompleteController.execute(todoId);
 
     revalidatePath("/");
-    return TodoPresenter.present(updatedTodo);
+    return updatedTodo;
   } catch (error) {
     console.error("[toggleTodoComplete]", error);
     return TodoPresenter.error(error);

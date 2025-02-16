@@ -70,7 +70,7 @@ export class DrizzleTodoRepository implements TodoRepository {
     const [updated] = await this.db
       .update(todos)
       .set({
-        completed: todo.completed,
+        completed: !todo.completed,
         updatedAt: new Date(),
       })
       .where(eq(todos.id, todo.id.toString()))
