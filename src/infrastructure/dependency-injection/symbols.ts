@@ -8,6 +8,7 @@ import {
   UpdateTodoUseCase,
 } from "@/src/application/use-cases/todo";
 import type { DrizzleTodoRepository } from "@/src/infrastructure/repositories/todo.repository";
+import type { CreateTodoController } from "@/src/interface-adapters/controllers/todos";
 
 export const DI_SYMBOLS = {
   // Infrastructure
@@ -23,6 +24,9 @@ export const DI_SYMBOLS = {
   GetTodoUseCase: Symbol.for("GetTodoUseCase"),
   ToggleTodoCompleteUseCase: Symbol.for("ToggleTodoCompleteUseCase"),
   ListTodosUseCase: Symbol.for("ListTodosUseCase"),
+
+  // Controllers
+  CreateTodoController: Symbol.for("CreateTodoController"),
 } as const;
 
 export interface DI_TYPES {
@@ -39,4 +43,7 @@ export interface DI_TYPES {
   GetTodoUseCase: GetTodoUseCase;
   ListTodosUseCase: ListTodosUseCase;
   ToggleTodoCompleteUseCase: ToggleTodoCompleteUseCase;
+
+  // Controllers
+  CreateTodoController: CreateTodoController;
 }

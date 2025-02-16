@@ -1,10 +1,14 @@
-import { CreateTodoDTO, TodoEntity, TodoId } from "@/src/entities/todo.entity";
+import {
+  CreateTodoDTO,
+  TodoEntity,
+  type UpdateTodoDTO,
+} from "@/src/entities/models/todo.entity";
 
 export interface TodoRepository {
   create(todo: CreateTodoDTO): Promise<TodoEntity>;
-  findById(id: TodoId): Promise<TodoEntity | null>;
+  findById(id: TodoEntity["id"]): Promise<TodoEntity | null>;
   findAll(): Promise<TodoEntity[]>;
-  update(todo: TodoEntity): Promise<TodoEntity>;
-  delete(id: TodoId): Promise<void>;
+  update(id: TodoEntity["id"], todo: UpdateTodoDTO): Promise<TodoEntity>;
+  delete(id: TodoEntity["id"]): Promise<void>;
   toggleComplete(todo: TodoEntity): Promise<TodoEntity>;
 }

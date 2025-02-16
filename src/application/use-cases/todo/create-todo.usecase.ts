@@ -1,7 +1,7 @@
-import { inject, injectable } from "inversify";
-import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
 import { type TodoRepository } from "@/src/application/repositories/todo.repository.interface";
-import { CreateTodoDTO, TodoEntity } from "@/src/entities/todo.entity";
+import { CreateTodoDTO, TodoEntity } from "@/src/entities/models/todo.entity";
+import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
+import { inject, injectable } from "inversify";
 
 @injectable()
 export class CreateTodoUseCase {
@@ -11,10 +11,8 @@ export class CreateTodoUseCase {
   ) {}
 
   async execute(data: CreateTodoDTO): Promise<TodoEntity> {
-    // Création de l'entité Todo
-    const todo = TodoEntity.create(data);
-
-    // Sauvegarde dans le repository
-    return this.todoRepository.create(todo);
+    // HINT: this is where you'd do authorization checks - is this user authorized to create a todo
+    // for example: free users are allowed only 5 todos, throw an UnauthorizedError if more than 5
+    return this.todoRepository.create(data);
   }
 }
