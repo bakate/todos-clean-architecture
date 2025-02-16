@@ -16,7 +16,9 @@
     "db:studio": "bunx drizzle-kit studio"
   },
   "dependencies": {
+    "@evyweb/ioctopus": "^1.2.0",
     "@heroui/react": "^2.6.14",
+    "@libsql/client": "^0.14.0",
     "@neondatabase/serverless": "^0.10.4",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.39.3",
