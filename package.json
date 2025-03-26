@@ -61,9 +61,9 @@
     "typescript": "^5"
   },
   "lint-staged": {
-    "*": [
-      "bun lint",
-      "bun test"
+    "*.{js,jsx,ts,tsx}": [
+      "bunx eslint --fix",
+      "bunx vitest related --run"
     ]
   }
 }
