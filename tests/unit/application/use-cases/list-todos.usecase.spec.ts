@@ -1,9 +1,14 @@
-import { type TodoRepository } from "@/src/application/repositories/todo.repository.interface";
-import { ListTodosUseCase } from "@/src/application/use-cases/todo/list-todos.usecase";
-import { applicationContainer } from "@/src/infrastructure/dependency-injection/container";
-import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
-import "reflect-metadata";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
+import type { TodoRepository } from "@/src/application/repositories/todo.repository.interface";
+import type { ListTodosUseCase } from "@/src/application/use-cases/todo/list-todos.usecase";
+
+import { applicationContainer } from "@/src/infrastructure/dependency-injection/container";
+
+import "reflect-metadata";
+
+import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
+
 import { setupTest, teardownTest } from "./helpers/setup-test";
 
 describe("ListTodosUseCase", () => {
@@ -14,7 +19,7 @@ describe("ListTodosUseCase", () => {
     const { repository: repo } = setupTest();
     repository = repo;
     useCase = applicationContainer.get<ListTodosUseCase>(
-      DI_SYMBOLS.ListTodosUseCase
+      DI_SYMBOLS.ListTodosUseCase,
     );
   });
 
@@ -59,7 +64,7 @@ describe("ListTodosUseCase", () => {
     });
 
     // Update todo1 to make it more recent
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise(resolve => setTimeout(resolve, 100));
     await repository.update(todo1.id, todo1);
 
     // Act

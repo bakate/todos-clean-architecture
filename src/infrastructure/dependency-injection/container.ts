@@ -1,7 +1,11 @@
-import { TodoRepository } from "@/src/application/repositories/todo.repository.interface";
-import { db } from "@/src/infrastructure/db/connection";
 import { Container } from "inversify";
+
+import type { TodoRepository } from "@/src/application/repositories/todo.repository.interface";
+
+import { db } from "@/src/infrastructure/db/connection";
+
 import "reflect-metadata";
+
 import { todoModule } from "./modules/todo/todo.module";
 import { DI_SYMBOLS } from "./symbols";
 

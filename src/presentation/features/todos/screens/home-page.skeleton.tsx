@@ -1,8 +1,9 @@
 "use client";
 
-import { TodoListSkeleton } from "../components/TodoSkeleton";
 import { Skeleton } from "@heroui/react";
+
 import { TodoForm } from "../components";
+import { TodoListSkeleton } from "../components/TodoSkeleton";
 
 export function HomePageSkeleton() {
   return (

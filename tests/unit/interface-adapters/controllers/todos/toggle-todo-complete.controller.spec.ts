@@ -1,13 +1,17 @@
-import { type TodoRepository } from "@/src/application/repositories/todo.repository.interface";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
+import type { TodoRepository } from "@/src/application/repositories/todo.repository.interface";
+import type { ToggleTodoCompleteController } from "@/src/interface-adapters/controllers/todos";
+
 import { applicationContainer } from "@/src/infrastructure/dependency-injection/container";
 import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
-import type { ToggleTodoCompleteController } from "@/src/interface-adapters/controllers/todos";
+
+import "reflect-metadata";
+
 import {
   setupTest,
   teardownTest,
 } from "@/tests/unit/application/use-cases/helpers/setup-test";
-import "reflect-metadata";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 describe("ToggleTodoCompleteController", () => {
   let useCase: ToggleTodoCompleteController;
@@ -17,7 +21,7 @@ describe("ToggleTodoCompleteController", () => {
     const { repository: repo } = setupTest();
     repository = repo;
     useCase = applicationContainer.get<ToggleTodoCompleteController>(
-      DI_SYMBOLS.ToggleTodoCompleteController
+      DI_SYMBOLS.ToggleTodoCompleteController,
     );
   });
 
@@ -29,7 +33,7 @@ describe("ToggleTodoCompleteController", () => {
 
     // Act & Assert
     await expect(useCase.execute(invalidTodoId)).rejects.toThrowError(
-      `Id is invalid`
+      `Id is invalid`,
     );
   });
 
@@ -39,7 +43,7 @@ describe("ToggleTodoCompleteController", () => {
 
     // Act & Assert
     await expect(useCase.execute(invalidTodoId)).rejects.toThrowError(
-      `Todo with id ${invalidTodoId} not found`
+      `Todo with id ${invalidTodoId} not found`,
     );
   });
 

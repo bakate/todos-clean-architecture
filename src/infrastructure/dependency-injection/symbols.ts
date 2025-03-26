@@ -1,5 +1,5 @@
-import { TodoRepository } from "@/src/application/repositories/todo.repository.interface";
-import {
+import type { TodoRepository } from "@/src/application/repositories/todo.repository.interface";
+import type {
   CreateTodoUseCase,
   DeleteTodoUseCase,
   GetTodoUseCase,
@@ -35,7 +35,7 @@ export const DI_SYMBOLS = {
   ToggleTodoCompleteController: Symbol.for("ToggleTodoCompleteController"),
 } as const;
 
-export interface DI_TYPES {
+export type DI_TYPES = {
   // Infrastructure
   Database: DrizzleTodoRepository;
 
@@ -55,4 +55,4 @@ export interface DI_TYPES {
   DeleteTodoController: DeleteTodoController;
   UpdateTodoController: UpdateTodoController;
   ToggleTodoCompleteController: ToggleTodoCompleteController;
-}
+};

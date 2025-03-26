@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
 
-import { resolve } from "path";
+import { resolve } from "node:path";
 import env from "vite-plugin-env-compatible";
 import { defineConfig } from "vitest/config";
 

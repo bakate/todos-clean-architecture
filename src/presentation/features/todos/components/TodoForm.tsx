@@ -1,14 +1,15 @@
 "use client";
 
-import { TodoViewModel } from "@/src/interface-adapters/presenters/todo.presenter";
 import { Button, Input, Textarea } from "@heroui/react";
 import { useRef, useTransition } from "react";
 
-interface TodoFormProps {
+import type { TodoViewModel } from "@/src/interface-adapters/presenters/todo.presenter";
+
+type TodoFormProps = {
   todo?: TodoViewModel;
   onSubmit: (formData: FormData) => Promise<void>;
   submitLabel: string;
-}
+};
 
 export function TodoForm({ todo, onSubmit, submitLabel }: TodoFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
@@ -25,7 +26,8 @@ export function TodoForm({ todo, onSubmit, submitLabel }: TodoFormProps) {
     <form
       ref={formRef}
       action={handleSubmit}
-      className="space-y-4 rounded-lg border p-4">
+      className="space-y-4 rounded-lg border p-4"
+    >
       <div className="space-y-2">
         <label htmlFor="title" className="text-sm font-medium">
           Title

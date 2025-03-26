@@ -1,9 +1,14 @@
-import { type TodoRepository } from "@/src/application/repositories/todo.repository.interface";
-import { ToggleTodoCompleteUseCase } from "@/src/application/use-cases/todo/toggle-todo-complete.usecase";
-import { applicationContainer } from "@/src/infrastructure/dependency-injection/container";
-import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
-import "reflect-metadata";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
+import type { TodoRepository } from "@/src/application/repositories/todo.repository.interface";
+import type { ToggleTodoCompleteUseCase } from "@/src/application/use-cases/todo/toggle-todo-complete.usecase";
+
+import { applicationContainer } from "@/src/infrastructure/dependency-injection/container";
+
+import "reflect-metadata";
+
+import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
+
 import { setupTest, teardownTest } from "./helpers/setup-test";
 
 describe("ToggleTodoCompleteUseCase", () => {
@@ -14,7 +19,7 @@ describe("ToggleTodoCompleteUseCase", () => {
     const { repository: repo } = setupTest();
     repository = repo;
     useCase = applicationContainer.get<ToggleTodoCompleteUseCase>(
-      DI_SYMBOLS.ToggleTodoCompleteUseCase
+      DI_SYMBOLS.ToggleTodoCompleteUseCase,
     );
   });
 
@@ -38,6 +43,7 @@ describe("ToggleTodoCompleteUseCase", () => {
 
     // Verify the todo was actually updated in the repository
     const updatedTodo = await repository.findById(todo.id);
+
     expect(updatedTodo?.completed).toBe(true);
   });
 });

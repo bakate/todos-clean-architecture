@@ -1,9 +1,14 @@
-import { type TodoRepository } from "@/src/application/repositories/todo.repository.interface";
-import { UpdateTodoUseCase } from "@/src/application/use-cases/todo/update-todo.usecase";
-import { applicationContainer } from "@/src/infrastructure/dependency-injection/container";
-import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
-import "reflect-metadata";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
+import type { TodoRepository } from "@/src/application/repositories/todo.repository.interface";
+import type { UpdateTodoUseCase } from "@/src/application/use-cases/todo/update-todo.usecase";
+
+import { applicationContainer } from "@/src/infrastructure/dependency-injection/container";
+
+import "reflect-metadata";
+
+import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
+
 import { setupTest, teardownTest } from "./helpers/setup-test";
 
 describe("UpdateTodoUseCase", () => {
@@ -14,7 +19,7 @@ describe("UpdateTodoUseCase", () => {
     const { repository: repo } = setupTest();
     repository = repo;
     useCase = applicationContainer.get<UpdateTodoUseCase>(
-      DI_SYMBOLS.UpdateTodoUseCase
+      DI_SYMBOLS.UpdateTodoUseCase,
     );
   });
 

@@ -40,7 +40,7 @@ export function TodoListSkeleton() {
   return (
     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 grid-rows-[auto]">
       {Array.from({ length: 7 }).map((_, index) => (
-        <TodoSkeleton key={index} />
+        <TodoSkeleton key={`skeleton-${index + Math.random()}`} />
       ))}
     </div>
   );

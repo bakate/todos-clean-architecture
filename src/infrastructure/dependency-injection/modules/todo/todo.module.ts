@@ -1,14 +1,12 @@
 import { ContainerModule } from "inversify";
 
-import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
-import { MockTodoRepository } from "@/src/infrastructure/repositories/todo.repository.mock";
-
-import { type TodoRepository } from "@/src/application/repositories/todo.repository.interface";
-import { DrizzleTodoRepository } from "@/src/infrastructure/repositories/todo.repository";
+import type { TodoRepository } from "@/src/application/repositories/todo.repository.interface";
 
 // use cases
 import * as useCases from "@/src/application/use-cases/todo";
-
+import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
+import { DrizzleTodoRepository } from "@/src/infrastructure/repositories/todo.repository";
+import { MockTodoRepository } from "@/src/infrastructure/repositories/todo.repository.mock";
 // controllers
 import * as controllers from "@/src/interface-adapters/controllers/todos";
 
@@ -23,14 +21,14 @@ const TodoRepositoryImpl = isTestEnvironment
   : DrizzleTodoRepository;
 
 const allUseCases = Object.fromEntries(
-  useCaseKeys.map((useCaseKey) => [useCaseKey, useCases[useCaseKey]])
+  useCaseKeys.map(useCaseKey => [useCaseKey, useCases[useCaseKey]]),
 );
 
 const allControllers = Object.fromEntries(
-  todoControllersKeys.map((controllerKey) => [
+  todoControllersKeys.map(controllerKey => [
     controllerKey,
     controllers[controllerKey],
-  ])
+  ]),
 );
 
 export const todoModule = new ContainerModule((bind) => {

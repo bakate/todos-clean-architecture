@@ -1,10 +1,10 @@
 import { injectable } from "inversify";
 
-import { type TodoRepository } from "@/src/application/repositories/todo.repository.interface";
-import {
+import type { TodoRepository } from "@/src/application/repositories/todo.repository.interface";
+import type {
   CreateTodoDTO,
   TodoEntity,
-  type UpdateTodoDTO,
+  UpdateTodoDTO,
 } from "@/src/entities/models/todo.entity";
 
 @injectable()
@@ -25,23 +25,25 @@ export class MockTodoRepository implements TodoRepository {
   }
 
   async findById(id: TodoEntity["id"]): Promise<TodoEntity | null> {
-    return this.todos.find((todo) => todo.id === id) || null;
+    return this.todos.find(todo => todo.id === id) || null;
   }
 
   async findAll(): Promise<TodoEntity[]> {
     return [...this.todos].sort(
-      (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()
+      (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime(),
     );
   }
 
   async update(
     todoId: TodoEntity["id"],
-    todo: UpdateTodoDTO
+    todo: UpdateTodoDTO,
   ): Promise<TodoEntity> {
     const index = this.todos.findIndex(
-      (t) => t.id.toString() === todoId.toString()
+      t => t.id.toString() === todoId.toString(),
     );
-    if (index === -1) throw new Error("Todo not found");
+    if (index === -1) {
+      throw new Error("Todo not found");
+    }
 
     this.todos[index] = {
       ...this.todos[index],
@@ -53,7 +55,7 @@ export class MockTodoRepository implements TodoRepository {
 
   async delete(id: TodoEntity["id"]): Promise<void> {
     const index = this.todos.findIndex(
-      (todo) => todo.id.toString() === id.toString()
+      todo => todo.id.toString() === id.toString(),
     );
     if (index !== -1) {
       this.todos.splice(index, 1);
@@ -62,9 +64,11 @@ export class MockTodoRepository implements TodoRepository {
 
   async toggleComplete(todo: TodoEntity): Promise<TodoEntity> {
     const index = this.todos.findIndex(
-      (t) => t.id.toString() === todo.id.toString()
+      t => t.id.toString() === todo.id.toString(),
     );
-    if (index === -1) throw new Error("Todo not found");
+    if (index === -1) {
+      throw new Error("Todo not found");
+    }
 
     todo.completed = !todo.completed;
     this.todos[index] = todo;

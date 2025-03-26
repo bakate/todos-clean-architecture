@@ -1,10 +1,12 @@
 "use client";
-import {
+import { useState, useTransition } from "react";
+import { toast } from "sonner";
+
+import type {
   TodoPresenterResult,
   TodoViewModel,
 } from "@/src/interface-adapters/presenters/todo.presenter";
-import { useState, useTransition } from "react";
-import { toast } from "sonner";
+
 import {
   createTodo,
   deleteTodo,
@@ -23,12 +25,18 @@ export function HomePageScreen({
   initialTodos: TodoPresenterResult<TodoViewModel[]>;
 }) {
   const [todos, setTodos] = useState<TodoViewModel[]>(
-    initialTodos.success ? initialTodos.data ?? [] : []
+    initialTodos.success ? initialTodos.data ?? [] : [],
   );
 
   const [editingTodo, setEditingTodo] = useState<TodoViewModel | null>(null);
   const [isPending, startTransition] = useTransition();
 
+  const refreshTodos = async () => {
+    const result = await getTodos();
+    if (result.success && result.data) {
+      setTodos(result.data);
+    }
+  };
   const handleCreate = async (formData: FormData) => {
     startTransition(async () => {
       const result = await createTodo(formData);
@@ -41,7 +49,9 @@ export function HomePageScreen({
 
   const handleUpdate = async (formData: FormData) => {
     startTransition(async () => {
-      if (!editingTodo) return;
+      if (!editingTodo) {
+        return;
+      }
 
       const result = await updateTodo(editingTodo.id, formData);
       if (result.success && result.data) {
@@ -60,20 +70,13 @@ export function HomePageScreen({
     });
   };
 
-  const refreshTodos = async () => {
-    const result = await getTodos();
-    if (result.success && result.data) {
-      setTodos(result.data);
-    }
-  };
-
   const handleToggleComplete = async (todo: TodoViewModel) => {
     startTransition(async () => {
       const result = await toggleTodoComplete(todo.id);
       if (result.success && result.data) {
         await refreshTodos();
         toast.success(
-          `Todo ${result.data.completed ? "terminée" : "réactivée"}`
+          `Todo ${result.data.completed ? "terminée" : "réactivée"}`,
         );
       }
     });
@@ -106,7 +109,7 @@ export function HomePageScreen({
       <EditTodoDialog
         todo={editingTodo}
         open={editingTodo !== null}
-        onOpenChange={(open) => !open && setEditingTodo(null)}
+        onOpenChange={open => !open && setEditingTodo(null)}
         onSubmit={handleUpdate}
       />
     </main>

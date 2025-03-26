@@ -1,9 +1,14 @@
-import { type TodoRepository } from "@/src/application/repositories/todo.repository.interface";
-import { CreateTodoUseCase } from "@/src/application/use-cases/todo/create-todo.usecase";
-import { applicationContainer } from "@/src/infrastructure/dependency-injection/container";
-import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
-import "reflect-metadata";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
+import type { TodoRepository } from "@/src/application/repositories/todo.repository.interface";
+import type { CreateTodoUseCase } from "@/src/application/use-cases/todo/create-todo.usecase";
+
+import { applicationContainer } from "@/src/infrastructure/dependency-injection/container";
+
+import "reflect-metadata";
+
+import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
+
 import { setupTest, teardownTest } from "./helpers/setup-test";
 
 describe("CreateTodoUseCase", () => {
@@ -14,7 +19,7 @@ describe("CreateTodoUseCase", () => {
     const { repository: repo } = setupTest();
     repository = repo;
     useCase = applicationContainer.get<CreateTodoUseCase>(
-      DI_SYMBOLS.CreateTodoUseCase
+      DI_SYMBOLS.CreateTodoUseCase,
     );
   });
 
@@ -37,6 +42,7 @@ describe("CreateTodoUseCase", () => {
 
     // Verify it was actually created
     const allTodos = await repository.findAll();
+
     expect(allTodos).toHaveLength(1);
     expect(allTodos[0].title).toBe(todoData.title);
   });

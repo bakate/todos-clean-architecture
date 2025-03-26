@@ -1,18 +1,20 @@
 "use client";
 
-import { TodoViewModel } from "@/src/interface-adapters/presenters/todo.presenter";
-import { formatDate } from "@/src/presentation/shared/utils/date";
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
 import { Checkbox } from "@heroui/react";
 import { LuPencil, LuTrash2 } from "react-icons/lu";
 
-interface TodoListProps {
+import type { TodoViewModel } from "@/src/interface-adapters/presenters/todo.presenter";
+
+import { formatDate } from "@/src/presentation/shared/utils/date";
+
+type TodoListProps = {
   todos: TodoViewModel[];
   onEdit: (todo: TodoViewModel) => void;
   onDelete: (todo: TodoViewModel) => void;
   onToggleComplete: (todo: TodoViewModel) => void;
-}
+};
 
 export function TodoList({
   todos,
@@ -32,30 +34,32 @@ export function TodoList({
 
   return (
     <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-4 grid-rows-[auto]">
-      {todos.map((todo) => (
+      {todos.map(todo => (
         <Card
           key={todo.id}
           className={`max-w-[400px] grid grid-rows-[auto_1fr_auto] ${
             todo.completed ? "border-success-200 bg-success-50" : ""
-          }`}>
+          }`}
+        >
           <CardHeader className="min-h-[80px]">
             <div className="flex gap-2 flex-col h-full">
               <h2
-                className={
-                  "text-lg font-semibold leading-tight line-clamp-1 flex items-center gap-2"
-                }>
+                className="text-lg font-semibold leading-tight line-clamp-1 flex items-center gap-2"
+              >
                 <Checkbox
                   defaultSelected={todo.completed}
                   color={todo.completed ? "success" : "default"}
                   lineThrough={todo.completed}
-                  onChange={() => onToggleComplete(todo)}>
+                  onChange={() => onToggleComplete(todo)}
+                >
                   {todo.title}
                 </Checkbox>
               </h2>
               <p
                 className={`text-sm text-gray-500 line-clamp-2 ${
                   todo.completed ? "line-through" : ""
-                }`}>
+                }`}
+              >
                 {todo?.description}
               </p>
             </div>
@@ -81,7 +85,8 @@ export function TodoList({
               variant="bordered"
               size="sm"
               onPress={() => onEdit(todo)}
-              endContent={<LuPencil />}>
+              endContent={<LuPencil />}
+            >
               Edit
             </Button>
             <Button
@@ -89,7 +94,8 @@ export function TodoList({
               color="danger"
               size="sm"
               onPress={() => onDelete(todo)}
-              endContent={<LuTrash2 />}>
+              endContent={<LuTrash2 />}
+            >
               Delete
             </Button>
           </CardFooter>

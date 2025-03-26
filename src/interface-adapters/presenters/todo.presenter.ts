@@ -1,19 +1,19 @@
-import { TodoEntity } from "@/src/entities/models/todo.entity";
+import type { TodoEntity } from "@/src/entities/models/todo.entity";
 
-export interface TodoViewModel {
+export type TodoViewModel = {
   id: string;
   title: string;
   description: string | null;
   completed: boolean;
   createdAt: string;
   updatedAt?: string;
-}
+};
 
-export interface TodoPresenterResult<T> {
+export type TodoPresenterResult<T> = {
   success: boolean;
   data?: T;
   error?: string;
-}
+};
 
 export class TodoPresenter {
   static toViewModel(entity: TodoEntity): TodoViewModel {
@@ -47,7 +47,7 @@ export class TodoPresenter {
   }
 
   static presentList(
-    entities: TodoEntity[]
+    entities: TodoEntity[],
   ): TodoPresenterResult<TodoViewModel[]> {
     return this.success(entities.map(this.toViewModel));
   }

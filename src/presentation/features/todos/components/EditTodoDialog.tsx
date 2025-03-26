@@ -1,6 +1,5 @@
 "use client";
 
-import { TodoViewModel } from "@/src/interface-adapters/presenters/todo.presenter";
 import {
   Button,
   Modal,
@@ -10,14 +9,17 @@ import {
   ModalHeader,
 } from "@heroui/react";
 import { useTransition } from "react";
+
+import type { TodoViewModel } from "@/src/interface-adapters/presenters/todo.presenter";
+
 import { TodoForm } from "./TodoForm";
 
-interface EditTodoDialogProps {
+type EditTodoDialogProps = {
   todo: TodoViewModel | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (formData: FormData) => Promise<void>;
-}
+};
 
 export function EditTodoDialog({
   todo,
@@ -26,7 +28,9 @@ export function EditTodoDialog({
   onSubmit,
 }: EditTodoDialogProps) {
   const [, startTransition] = useTransition();
-  if (!todo) return null;
+  if (!todo) {
+    return null;
+  }
 
   return (
     <Modal isOpen={open} onOpenChange={onOpenChange} backdrop="transparent">

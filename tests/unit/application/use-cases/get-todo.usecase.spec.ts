@@ -1,9 +1,14 @@
-import { type TodoRepository } from "@/src/application/repositories/todo.repository.interface";
-import { GetTodoUseCase } from "@/src/application/use-cases/todo/get-todo.usecase";
-import { applicationContainer } from "@/src/infrastructure/dependency-injection/container";
-import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
-import "reflect-metadata";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
+import type { TodoRepository } from "@/src/application/repositories/todo.repository.interface";
+import type { GetTodoUseCase } from "@/src/application/use-cases/todo/get-todo.usecase";
+
+import { applicationContainer } from "@/src/infrastructure/dependency-injection/container";
+
+import "reflect-metadata";
+
+import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
+
 import { setupTest, teardownTest } from "./helpers/setup-test";
 
 describe("GetTodoUseCase", () => {
@@ -14,7 +19,7 @@ describe("GetTodoUseCase", () => {
     const { repository: repo } = setupTest();
     repository = repo;
     useCase = applicationContainer.get<GetTodoUseCase>(
-      DI_SYMBOLS.GetTodoUseCase
+      DI_SYMBOLS.GetTodoUseCase,
     );
   });
 

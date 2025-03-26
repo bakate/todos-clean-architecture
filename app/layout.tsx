@@ -1,8 +1,10 @@
+import type { Metadata, Viewport } from "next";
+
+import clsx from "clsx";
+import "@/styles/globals.css";
+
 import { fontSans } from "@/config/fonts";
 import { Providers } from "@/src/presentation/shared";
-import "@/styles/globals.css";
-import clsx from "clsx";
-import type { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -27,7 +29,7 @@ export default function RootLayout({
       <body
         className={clsx(
           "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
+          fontSans.variable,
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>

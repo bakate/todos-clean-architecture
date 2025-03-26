@@ -1,19 +1,20 @@
-import type { DeleteTodoUseCase } from "@/src/application/use-cases/todo";
-import { InputParseError, NotFoundError } from "@/src/entities/errors/common";
+import { inject } from "inversify";
 import z from "zod";
 
 import type { TodoRepository } from "@/src/application/repositories/todo.repository.interface";
-import { type TodoEntity } from "@/src/entities/models/todo.entity";
+import type { DeleteTodoUseCase } from "@/src/application/use-cases/todo";
+import type { TodoEntity } from "@/src/entities/models/todo.entity";
+
+import { InputParseError, NotFoundError } from "@/src/entities/errors/common";
 import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection";
 import { TodoPresenter } from "@/src/interface-adapters/presenters/todo.presenter";
-import { inject } from "inversify";
 
 export class DeleteTodoController {
   constructor(
     @inject(DI_SYMBOLS.TodoRepository)
     private readonly todoRepository: TodoRepository,
     @inject(DI_SYMBOLS.DeleteTodoUseCase)
-    private readonly deleteTodoUseCase: DeleteTodoUseCase
+    private readonly deleteTodoUseCase: DeleteTodoUseCase,
   ) {}
 
   async execute(todoId: TodoEntity["id"]) {

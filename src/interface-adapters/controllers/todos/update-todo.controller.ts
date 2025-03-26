@@ -1,23 +1,24 @@
-import type { UpdateTodoUseCase } from "@/src/application/use-cases/todo";
-import { InputParseError, NotFoundError } from "@/src/entities/errors/common";
+import { inject } from "inversify";
 import z from "zod";
 
 import type { TodoRepository } from "@/src/application/repositories/todo.repository.interface";
+import type { UpdateTodoUseCase } from "@/src/application/use-cases/todo";
+import type { TodoEntity, UpdateTodoDTO } from "@/src/entities/models/todo.entity";
+
+import { InputParseError, NotFoundError } from "@/src/entities/errors/common";
 import {
+
   UpdateTodoSchema,
-  type TodoEntity,
-  type UpdateTodoDTO,
 } from "@/src/entities/models/todo.entity";
 import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection";
 import { TodoPresenter } from "@/src/interface-adapters/presenters/todo.presenter";
-import { inject } from "inversify";
 
 export class UpdateTodoController {
   constructor(
     @inject(DI_SYMBOLS.TodoRepository)
     private readonly todoRepository: TodoRepository,
     @inject(DI_SYMBOLS.UpdateTodoUseCase)
-    private readonly updateTodoUseCase: UpdateTodoUseCase
+    private readonly updateTodoUseCase: UpdateTodoUseCase,
   ) {}
 
   async execute(todoId: TodoEntity["id"], data: UpdateTodoDTO) {

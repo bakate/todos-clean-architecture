@@ -1,18 +1,22 @@
-import { type TodoRepository } from "@/src/application/repositories/todo.repository.interface";
-import { CreateTodoDTO, TodoEntity } from "@/src/entities/models/todo.entity";
-import * as schema from "@/src/infrastructure/db/schema";
+import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
+
+import { desc, eq } from "drizzle-orm";
+import { inject, injectable } from "inversify";
+
+import type { TodoRepository } from "@/src/application/repositories/todo.repository.interface";
+import type { CreateTodoDTO, TodoEntity } from "@/src/entities/models/todo.entity";
+import type * as schema from "@/src/infrastructure/db/schema";
+
 import { todos } from "@/src/infrastructure/db/schema";
 import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
-import { desc, eq } from "drizzle-orm";
-import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
-import { inject, injectable } from "inversify";
 
 @injectable()
 export class DrizzleTodoRepository implements TodoRepository {
   constructor(
     @inject(DI_SYMBOLS.Database)
-    private readonly db: NeonHttpDatabase<typeof schema>
+    private readonly db: NeonHttpDatabase<typeof schema>,
   ) {}
+
   async create(todoData: CreateTodoDTO): Promise<TodoEntity> {
     const [inserted] = await this.db
       .insert(todos)
@@ -46,7 +50,7 @@ export class DrizzleTodoRepository implements TodoRepository {
 
   async update(
     todoId: TodoEntity["id"],
-    todo: TodoEntity
+    todo: TodoEntity,
   ): Promise<TodoEntity> {
     const [updated] = await this.db
       .update(todos)

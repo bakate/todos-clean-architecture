@@ -1,13 +1,17 @@
-import { type TodoRepository } from "@/src/application/repositories/todo.repository.interface";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
+import type { TodoRepository } from "@/src/application/repositories/todo.repository.interface";
+import type { DeleteTodoController } from "@/src/interface-adapters/controllers/todos/delete-todo.controller";
+
 import { applicationContainer } from "@/src/infrastructure/dependency-injection/container";
 import { DI_SYMBOLS } from "@/src/infrastructure/dependency-injection/symbols";
-import type { DeleteTodoController } from "@/src/interface-adapters/controllers/todos/delete-todo.controller";
+
+import "reflect-metadata";
+
 import {
   setupTest,
   teardownTest,
 } from "@/tests/unit/application/use-cases/helpers/setup-test";
-import "reflect-metadata";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 describe("DeleteTodoController", () => {
   let useCase: DeleteTodoController;
@@ -17,7 +21,7 @@ describe("DeleteTodoController", () => {
     const { repository: repo } = setupTest();
     repository = repo;
     useCase = applicationContainer.get<DeleteTodoController>(
-      DI_SYMBOLS.DeleteTodoController
+      DI_SYMBOLS.DeleteTodoController,
     );
   });
 
@@ -34,7 +38,7 @@ describe("DeleteTodoController", () => {
 
     // Act & Assert
     await expect(useCase.execute(invalidTodoId)).rejects.toThrowError(
-      "Id is invalid"
+      "Id is invalid",
     );
   });
 
@@ -49,7 +53,7 @@ describe("DeleteTodoController", () => {
 
     // Act & Assert
     await expect(useCase.execute(invalidTodoId)).rejects.toThrowError(
-      `Todo with id ${invalidTodoId} not found`
+      `Todo with id ${invalidTodoId} not found`,
     );
   });
 
@@ -65,6 +69,7 @@ describe("DeleteTodoController", () => {
 
     // Assert
     const todos = await repository.findAll();
+
     expect(todos).toHaveLength(0);
   });
 });
