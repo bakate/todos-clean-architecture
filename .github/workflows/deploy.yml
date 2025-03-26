@@ -1,7 +1,7 @@
 name: Deploy to Vercel
 on:
   workflow_run:
-    workflows: ["Test"]
+    workflows: [CI]
     types:
       - completed
     branches:
